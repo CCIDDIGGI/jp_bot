@@ -27,8 +27,9 @@ How to install a new dependency?
 
 With an active environment:
 
-1.  run "pip install dependency-name" (change "dependency-name" with the desired dependency).
+1.  Install the dependency.
+    Run "pip install dependency-name" (change "dependency-name" with the desired dependency).
 
-2.  Freeze the current "requirements.txt" file.
+2.  Freeze the current "requirements.txt" file (optional if working alone).
     This operation is crucial since the newly installed dependency is only present in your local venv, to make it visible for everyone that a new dependency was installed we need to update the "requirements.txt" file.
     To do so, run the command "pip freeze > /path/to/your/files/requirements.txt" (change /path/to/your/files/requirements.txt with the dir containing the "requirements.txt" file, which should be the root of the project) and press enter.
