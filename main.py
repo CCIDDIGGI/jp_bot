@@ -1,7 +1,6 @@
-from customtkinter import *
+from view.login.AuthView import AuthView
 
-app = CTk()
 
-app.geometry("500x400") 
+auth_view = AuthView.get_instance()
 
-app.mainloop()
+auth_view.create_view()
