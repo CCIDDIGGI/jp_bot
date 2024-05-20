@@ -1,7 +1,10 @@
-from customtkinter import *
 
-app = CTk()
+from view.login.LoginView import LoginView
 
-app.geometry("500x400") 
 
-app.mainloop()
+login_view = LoginView()
+
+login_view.init_view()
+
+
+    
