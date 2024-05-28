@@ -4,16 +4,12 @@ import pywhatkit
 from customtkinter import *
 
 from enums.api.ApiEnum import *
+from view.home.HomeView import HomeView
 
 class LoginView:    
     
     def __init__(self) -> None:
         pass 
-
-
-    def greet_event(self):
-        print("CLICKED")
-        print(self.get_info("https://api.cardtrader.com/api/v2/info", "eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJjYXJkdHJhZGVyLXByb2R1Y3Rpb24iLCJzdWIiOiJhcHA6OTc5MyIsImF1ZCI6ImFwcDo5NzkzIiwiZXhwIjo0ODcxOTA1MjYxLCJqdGkiOiIwMTdjNDZiOC05NmQ1LTQ0NzMtYTA3OC02YzEyY2Q1MDA2MjMiLCJpYXQiOjE3MTYyMzE2NjEsIm5hbWUiOiJUaW5hcmkgQXBwIDIwMjQwNDAzMjIxNTUwIn0.u_QsTlQErxV6LWrD0y2r5AMNoTds5qxTT2QaHVNwO_BxxS3mwEMwAg-muMOGJc6VuXb9UOBqTtdZdgmxHO65GV9NNn0xFbTgtZUTkHMrpNPXFeYXA8SxSv3jXOfg4agrC_aO5DekGJ2qoHJuXwaqdzbNln39wJmfsOnMVwVrmq5nbNjgn5LI6CEFk2Ri4sAe01dyYTGk0xPlbr_m63rrl5ridcFSlE3H2LXfkocbnXoLDEqgd9Z6HjAtqGTnd15PrQeTgBevvarrdnrQAtbt-eaXHMtQM2HJ6OgG8Q-6Jc3yU2P3A29Hs2YsqO-d8ZsEqIIPGQg1MurvtKt7CtMjeQ"))
 
     def add_product_to_cart(self):
         try:
@@ -62,11 +58,14 @@ class LoginView:
         app = CTk()
         app.geometry("500x400") 
 
-        btn = CTkButton(app, text="Prova!", command=self.greet_event)
-        btn.place(relx=0.2, rely=0.2, anchor="center")
+        btn1 = CTkButton(app, text="MOVE TO PAGE2", command= HomeView.init_view)
+        btn1.place(x = 100, y = 300)
         
         btn2 = CTkButton(app, text="add to cart!", command= self.add_product_to_cart)
         btn2.place(relx=0.5, rely=0.5, anchor="center")
+        
+        cmb = CTkComboBox(app, values=['A', 'B', 'C', 'D'])
+        cmb.place(x = 20, y = 20)
 
         app.mainloop()
     
