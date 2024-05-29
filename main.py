@@ -1,10 +1,12 @@
 
-from view.login.LoginView import LoginView
+# from view.login.LoginView import LoginView
 
 
-login_view = LoginView()
-
-login_view.init_view()
+# login_view = LoginView()
 
 
+from view.home.HomeView import HomeView
+
+
+main_app = HomeView(root)
     

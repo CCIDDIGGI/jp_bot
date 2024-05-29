@@ -6,10 +6,26 @@ from customtkinter import *
 from enums.api.ApiEnum import *
 from view.home.HomeView import HomeView
 
-class LoginView:    
-    
-    def __init__(self) -> None:
-        pass 
+class LoginView:  
+
+    def __init__(self):
+        global login_view
+        login_view = CTk()
+        login_view.geometry("500x400") 
+
+        btn3 = CTkButton(login_view, text="navigate", command= self.navigate)
+        btn3.place(x = 300, y = 30)
+        
+        btn2 = CTkButton(login_view, text="add to cart!", command= self.add_product_to_cart)
+        btn2.place(relx=0.5, rely=0.5, anchor="center")
+        
+        cmb = CTkComboBox(login_view, values=['A', 'B', 'C', 'D'])
+        cmb.place(x = 20, y = 20)
+
+        login_view.mainloop()  
+        
+        
+         
 
     def add_product_to_cart(self):
         try:
@@ -53,21 +69,10 @@ class LoginView:
         else:   
             print(response.status_code, response.text)
 
-    def init_view(self):
+    def navigate(self):
+        prova = HomeView()
+        login_view.destroy()
 
-        app = CTk()
-        app.geometry("500x400") 
-
-        btn1 = CTkButton(app, text="MOVE TO PAGE2", command= HomeView.init_view)
-        btn1.place(x = 100, y = 300)
-        
-        btn2 = CTkButton(app, text="add to cart!", command= self.add_product_to_cart)
-        btn2.place(relx=0.5, rely=0.5, anchor="center")
-        
-        cmb = CTkComboBox(app, values=['A', 'B', 'C', 'D'])
-        cmb.place(x = 20, y = 20)
-
-        app.mainloop()
     
     def get_info(self, url, token):
 
