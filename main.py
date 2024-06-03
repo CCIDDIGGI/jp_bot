@@ -1,12 +1,12 @@
 
 # from view.login.LoginView import LoginView
 
-
-# login_view = LoginView()
+# LoginView()
 
 
 from view.home.HomeView import HomeView
 
 
-main_app = HomeView(root)
-    
+HomeView("Home View Title", (700,600))
+
+HomeView("Home View 2", (122,600))
