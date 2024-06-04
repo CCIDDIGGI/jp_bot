@@ -4,34 +4,29 @@ import pywhatkit
 from customtkinter import *
 
 from enums.api.ApiEnum import *
+from view.home.HomeView import HomeView
 
-class LoginView(CTk):  
+class LoginView(CTkFrame):  
 
-    def __init__(self):
+    # child of MainView -> parent argument is MainView
+    def __init__(self, parent):
+        self.parent = parent
 
         # main setup
-        super().__init__()
-        CTkToplevel()
-        self.title("Ciao")
+        super().__init__(parent)
+        self.place(relx = 0.1, y = 0)
 
+        # widgets
+        lbl = CTkLabel(self, 100, 100, 2, bg_color = "red")
+        btn = CTkButton(self, 20, 30, command = self.navigate_to_home)
 
-        # global login_view
-        # login_view = CTk()
-        # login_view.geometry("500x400") 
-
-        # btn3 = CTkButton(login_view, text="navigate", command= self.navigate)
-        # btn3.place(x = 300, y = 30)
-        
-        # btn2 = CTkButton(login_view, text="add to cart!", command= self.add_product_to_cart)
-        # btn2.place(relx=0.5, rely=0.5, anchor="center")
-        
-        # cmb = CTkComboBox(login_view, values=['A', 'B', 'C', 'D'])
-        # cmb.place(x = 20, y = 20)
-
-        # login_view.mainloop()  
+        lbl.pack()
+        btn.pack()
         
         
-         
+    def navigate_to_home(self):
+        HomeView(self.parent)
+        self.destroy()
 
     def add_product_to_cart(self):
         try:

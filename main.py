@@ -1,12 +1,9 @@
-
-# from view.login.LoginView import LoginView
-
-# LoginView()
+from view.MainView import MainView
 
 
-from view.home.HomeView import HomeView
+# entrypoint
+def main():
+    MainView()
 
-
-HomeView("Home View Title", (700,600))
-
-HomeView("Home View 2", (122,600))
+if __name__ == '__main__':
+    main()
