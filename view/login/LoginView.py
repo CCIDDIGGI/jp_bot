@@ -1,8 +1,6 @@
 import requests
 import pywhatkit
-
 from customtkinter import *
-
 from enums.api.ApiEnum import *
 from view.home.HomeView import HomeView
 
@@ -14,15 +12,21 @@ class LoginView(CTkFrame):
 
         # main setup
         super().__init__(parent)
-        self.place(relx = 0.1, y = 0)
+        self.place(relwidth = 1, relheight = 1)
 
         # widgets
-        lbl = CTkLabel(self, 100, 100, 2, bg_color = "red")
-        btn = CTkButton(self, 20, 30, command = self.navigate_to_home)
+        lbl = CTkLabel(self, 1, 1, 2, bg_color = "red", text = "Please enter your CardTrader personal Auth Token")
+        self.auth_entry = CTkEntry(self, placeholder_text = "Auth Token...")
+        self.auth_entry.bind("<<Modified>>", self.check_auth_btn_state())
+        self.btn = CTkButton(self, 20, 30, command = self.navigate_to_home, text = "Login", state = "disabled")
 
         lbl.pack()
-        btn.pack()
+        self.auth_entry.pack()
+        self.btn.pack()
         
+    def check_auth_btn_state(self, event = None):
+        self.auth_entry.get()
+        self.btn.destroy() // IDK
         
     def navigate_to_home(self):
         HomeView(self.parent)
