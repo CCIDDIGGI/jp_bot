@@ -1,6 +1,5 @@
 from view.MainView import MainView
 
-
 # entrypoint
 def main():
     MainView()

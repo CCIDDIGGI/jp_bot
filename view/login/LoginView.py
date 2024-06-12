@@ -1,7 +1,9 @@
 import tkinter
 import requests
 from customtkinter import *
+from controller.home.HomeController import HomeController
 from enums.api.ApiEnum import *
+from model.home.HomeModel import HomeModel
 from view.home.HomeView import HomeView
 from view.shared.sidebar.SidebarView import SidebarView
 
@@ -34,7 +36,9 @@ class LoginView(CTkFrame):
         
     def navigate_to_home(self):
         SidebarView(self.parent)
-        HomeView(self.parent)
+        home_view = HomeView(self.parent)
+        home_model = HomeModel()
+        HomeController(home_view, home_model)
         self.destroy()
 
     def add_product_to_cart(self):

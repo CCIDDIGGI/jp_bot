@@ -1,34 +1,37 @@
 from customtkinter import *
 import requests
 
+from controller.home.HomeController import HomeController
 from enums.api.ApiEnum import BearerToken, GamesApi
 
 class HomeView(CTkFrame):
 
     # child of MainView -> parent argument is MainView
-    def __init__(self, parent):
+    def __init__(self, parent, controller):
+        self.home_controller = controller
 
         # main setup
         super().__init__(parent)
         self.place(relx = 0.251, rely = 0, relwidth = 0.75, relheight = 1)
 
         # widgets
-        btn = CTkButton(self, text = "TEST API!", command = self.test_api)
+        btn = CTkButton(self, text = "TEST API!", command = self.home_controller.print())
         btn.place(x = 300, y = 20)
 
-    def test_api(self):
-        test = object
+    # def test_api(self):
+    #     test = object
 
-        headers = {
-            'Authorization': f'Bearer {BearerToken.TOKEN.value}'
-        }
+    #     headers = {
+    #         'Authorization': f'Bearer {BearerToken.TOKEN.value}'
+    #     }
 
-        test = requests.get(f'{GamesApi.GET_LISTING_BY_EXPANSION_ID.value}3403', headers=headers).json()
+    #     # return type is dict
+    #     test = requests.get(f'{GamesApi.GET_LISTING_BY_EXPANSION_ID.value}3403', headers=headers).json() 
 
-        test_list = test["261058"]
+    #     test_list = test["261058"]
 
-        print(test_list[0])
-        print(test_list[-1])
+    #     print(test_list[0])
+    #     print(test_list[-1])
 
 
 
