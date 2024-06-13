@@ -1,5 +1,5 @@
 
 class HomeModel():
 
-    def print() -> None:
+    def printaze(self) -> None:
         print("PRINTED FROM MODEL!")

@@ -1,9 +1,10 @@
 from customtkinter import *
 
+from controller.login.LoginController import LoginController
+from model.login.LoginModel import LoginModel
 from view.login.LoginView import LoginView
 
 class MainView(CTk):
-
     # this should be populated with data from
     # a db (something like an "options" table)
     # for now, it is hard coded
@@ -17,8 +18,9 @@ class MainView(CTk):
         self.resizable(True, True)
 
         # widgets
-        self.login_frame = LoginView(self)
-        # self.home_frame = HomeView(self)
+        login_view = LoginView(self)
+        login_model = LoginModel()
+        LoginController(login_model, login_view)
 
         # run
         self.mainloop()

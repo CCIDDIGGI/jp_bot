@@ -1,22 +1,22 @@
 from customtkinter import *
-import requests
-
-from controller.home.HomeController import HomeController
-from enums.api.ApiEnum import BearerToken, GamesApi
 
 class HomeView(CTkFrame):
 
     # child of MainView -> parent argument is MainView
-    def __init__(self, parent, controller):
-        self.home_controller = controller
-
+    def __init__(self, parent):
         # main setup
         super().__init__(parent)
         self.place(relx = 0.251, rely = 0, relwidth = 0.75, relheight = 1)
 
         # widgets
-        btn = CTkButton(self, text = "TEST API!", command = self.home_controller.print())
+        btn = CTkButton(self, text = "TEST API!", command = self.printa)
         btn.place(x = 300, y = 20)
+
+    def set_controller(self, controller) -> None:
+        self.controller = controller
+
+    def printa(self) -> None:
+        self.controller.printaz()
 
     # def test_api(self):
     #     test = object

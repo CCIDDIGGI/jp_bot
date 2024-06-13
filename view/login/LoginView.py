@@ -30,15 +30,17 @@ class LoginView(CTkFrame):
         lbl.pack()
         self.auth_entry.pack()
         self.btn.pack()
+
+    # setting controller (LoginController)
+    def set_controller(self, controller) -> None:
+        self.controller = controller
         
-    def check_auth_btn_state(self, *args):      
+    def check_auth_btn_state(self, *args) -> None:      
         self.btn.configure(state = "normal" if self.auth_var.get() else "disabled")
         
     def navigate_to_home(self):
-        SidebarView(self.parent)
-        home_view = HomeView(self.parent)
-        home_model = HomeModel()
-        HomeController(home_view, home_model)
+        # SidebarView(self.parent)
+        self.controller.navigate_to_home(self.parent)
         self.destroy()
 
     def add_product_to_cart(self):
