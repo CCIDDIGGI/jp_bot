@@ -60,3 +60,7 @@ class SidebarView(CTkFrame):
         cbx_odr.pack()
         cbx_sctry.pack()    
         cbx_sctnt.pack()      
+    
+    # setting controller (SidebarController)        
+    def set_controller(self, controller) -> None:
+        self.controller = controller

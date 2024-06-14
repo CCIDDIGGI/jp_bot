@@ -6,5 +6,5 @@ class HomeController():
         self.view = view
         self.view.set_controller(self)
 
-    def printaz(self) -> None:
-        self.model.printaze()
+    def test_api(self) -> None:
+        self.model.test_api()

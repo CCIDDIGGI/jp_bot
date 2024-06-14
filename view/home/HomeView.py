@@ -9,39 +9,22 @@ class HomeView(CTkFrame):
         self.place(relx = 0.251, rely = 0, relwidth = 0.75, relheight = 1)
 
         # widgets
-        btn = CTkButton(self, text = "TEST API!", command = self.printa)
+        btn = CTkButton(self, text = "TEST API!", command = self.test_api)
         btn.place(x = 300, y = 20)
 
     def set_controller(self, controller) -> None:
         self.controller = controller
 
-    def printa(self) -> None:
-        self.controller.printaz()
+    def test_api(self) -> None:
+        self.controller.test_api()
+
 
     # def test_api(self):
-    #     test = object
 
     #     headers = {
     #         'Authorization': f'Bearer {BearerToken.TOKEN.value}'
     #     }
 
-    #     # return type is dict
-    #     test = requests.get(f'{GamesApi.GET_LISTING_BY_EXPANSION_ID.value}3403', headers=headers).json() 
-
-    #     test_list = test["261058"]
-
-    #     print(test_list[0])
-    #     print(test_list[-1])
-
-
-
-
-    # def test_api(self):
-        
-    #     headers = {
-    #         'Authorization': f'Bearer {BearerToken.TOKEN.value}'
-    #     }
-        
     #     payload = {
     #         "product_id": 233952244,
     #         "quantity": 1,
@@ -66,9 +49,8 @@ class HomeView(CTkFrame):
     #     }
 
     #     response = requests.post(CartApi.ADD_PRODUCT_TO_CART.value, json=payload, headers=headers)
-        
+
     #     if response.status_code == 200:
     #         print("SUCCESS")
-    #     else:   
+    #     else:
     #         print(response.status_code, response.text)
-    
