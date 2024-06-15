@@ -1,7 +1,7 @@
 from customtkinter import *
 
 class HomeView(CTkFrame):
-
+    
     # child of MainView -> parent argument is MainView
     def __init__(self, parent):
         # main setup
@@ -9,14 +9,24 @@ class HomeView(CTkFrame):
         self.place(relx = 0.251, rely = 0, relwidth = 0.75, relheight = 1)
 
         # widgets
+        self.cmb_exp = CTkComboBox(self)
         btn = CTkButton(self, text = "TEST API!", command = self.test_api)
+        
+        # widgets rendering
+        self.cmb_exp.place(x=150, y=250)
         btn.place(x = 300, y = 20)
 
     def set_controller(self, controller) -> None:
         self.controller = controller
+        
+    # check if this is correct in mvc
+    def initialize_variables(self) -> None:
+        self.exp_list = self.controller.get_expansions()
+        self.cmb_exp.configure(values=self.exp_list)
 
     def test_api(self) -> None:
         self.controller.test_api()
+        
 
 
     # def test_api(self):

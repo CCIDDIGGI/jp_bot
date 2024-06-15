@@ -5,6 +5,7 @@ class BearerToken(Enum):
 
 class GamesApi(Enum):
     GET_ALL_GAMES = "https://api.cardtrader.com/api/v2/games"
+    GET_ALL_EXPANSIONS = "https://api.cardtrader.com/api/v2/expansions"
     GET_LISTING_BY_EXPANSION_ID  = "https://api.cardtrader.com/api/v2/marketplace/products?expansion_id="
 
 class CartApi(Enum):
