@@ -10,5 +10,5 @@ class HomeController():
     def test_api(self) -> None:
         self.model.test_api()
         
-    def get_expansions(self) -> list:
-        return self.model.get_expansions()
+    def get_expansions_list(self) -> list:
+        return self.model.get_mtg_exp_list()

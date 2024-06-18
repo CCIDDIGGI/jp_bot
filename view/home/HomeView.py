@@ -1,5 +1,7 @@
 from customtkinter import *
 
+from CTkScrollableDropdown import *
+
 class HomeView(CTkFrame):
     
     # child of MainView -> parent argument is MainView
@@ -9,8 +11,10 @@ class HomeView(CTkFrame):
         self.place(relx = 0.251, rely = 0, relwidth = 0.75, relheight = 1)
 
         # widgets
-        self.cmb_exp = CTkComboBox(self)
+        self.cmb_exp = CTkComboBox(self, )
         btn = CTkButton(self, text = "TEST API!", command = self.test_api)
+
+        self.scr_drpd = CTkScrollableDropdown(attach=self)
         
         # widgets rendering
         self.cmb_exp.place(x=150, y=250)
@@ -21,7 +25,7 @@ class HomeView(CTkFrame):
         
     # check if this is correct in mvc
     def initialize_variables(self) -> None:
-        self.exp_list = self.controller.get_expansions()
+        self.exp_list = self.controller.get_expansions_list()
         self.cmb_exp.configure(values=self.exp_list)
 
     def test_api(self) -> None:
