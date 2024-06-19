@@ -1,5 +1,4 @@
 from customtkinter import *
-
 from controller.login.LoginController import LoginController
 from model.login.LoginModel import LoginModel
 from view.login.LoginView import LoginView

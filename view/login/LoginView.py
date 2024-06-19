@@ -1,11 +1,6 @@
 import tkinter
-import requests
 from customtkinter import *
-from controller.home.HomeController import HomeController
 from enums.api.ApiEnum import *
-from model.home.HomeModel import HomeModel
-from view.home.HomeView import HomeView
-from view.shared.sidebar.SidebarView import SidebarView
 
 class LoginView(CTkFrame):  
 
@@ -39,29 +34,5 @@ class LoginView(CTkFrame):
         self.btn.configure(state = "normal" if self.auth_var.get() else "disabled")
         
     def navigate_to_home(self):
-        # SidebarView(self.parent)
         self.controller.navigate_to_home(self.parent)
-        self.destroy()
-
-    def add_product_to_cart(self):
-        try:
-            self.post_product_to_cart()
-        except Exception as exc:
-            print(exc)
-
-    def navigate(self):
-        return
-
-    
-    def get_info(self, url, token):
-
-        headers = {
-            'Authorization': f'Bearer {token}'
-        }
-
-        response = requests.get(url, headers=headers)
-
-        if response.status_code == 200:
-            return response.json()
-        else:   
-            return response.status_code, response.text  
+        self.pack_forget()
