@@ -10,15 +10,18 @@ class HomeView(CTkFrame):
         self.place(relx = 0.251, rely = 0, relwidth = 0.75, relheight = 1)
 
         # widgets
-        btn = CTkButton(self, text = "TEST API!", command = self.test_api)
-        entry_exp = CTkEntry(self, width=300)
-        self.scr_drpd = CTkScrollableDropdown(entry_exp,
-                                              command=lambda e: entry_exp.insert(0, e),
-                                              autocomplete=True)
+        self.entry_exp = CTkEntry(self, width=300)
+        btn_exp = CTkButton(self, text = "Get all listings for current expansion", state="disabled", command=self.get_listings_by_exp_id)
+        self.scr_drpd = CTkScrollableDropdown(self.entry_exp,
+                                              command=lambda e: 
+                                                  self.entry_exp.delete(0,'end') 
+                                                  or self.entry_exp.insert(0, e) 
+                                                  or btn_exp.configure(state="normal"),
+                                              autocomplete=True) 
         
         # widgets rendering
-        btn.place(x = 300, y = 20)
-        entry_exp.place(x=400, y=400)
+        btn_exp.place(x=400, y=100)
+        self.entry_exp.place(x=100, y=100)
 
     def set_controller(self, controller) -> None:
         self.controller = controller
@@ -26,10 +29,11 @@ class HomeView(CTkFrame):
     # check if this is correct in mvc
     def initialize_variables(self) -> None:
         self.exp_list = self.controller.get_expansions_list()
-        self.scr_drpd.configure(values=self.exp_list)
+        self.scr_drpd.configure(values=self.exp_list)     
 
-    def test_api(self) -> None:
-        self.controller.test_api()
+    def get_listings_by_exp_id(self) -> None:
+        exp_id = self.controller.get_exp_id_by_exp_name(self.entry_exp.get())
+        self.controller.get_listings_by_exp_id(exp_id)
         
 
 
