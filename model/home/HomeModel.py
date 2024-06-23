@@ -64,33 +64,26 @@ class HomeModel():
         
         try:
              listings = requests.get(f'{GamesApi.GET_LISTING_BY_EXPANSION_ID.value}{exp_id}', headers=headers).json()
-        # insert all possible http error exceptions
+        except requests.exceptions.ConnectionError as cer:
+            print(f"A connection error occurred: {cer}")
+            return
+        # except requests.exceptions.ConnectTimeout as cto:
+        #     print(f"The request timed out while trying to connect to the remote server: {cto}")
+        #     return
+        except requests.exceptions.HTTPError as httperr:
+            print(f"An HTTP error occurred: {httperr}")
+            return
         except:
             print(f"Something went wrong while fetching all the listing by expansion id: {exp_id}")
             return
         
         for x in listings.keys():
-            for y in range(len(listings[x]) -1):
-                if "properties_hash" in listings[x][y]:
-                    if "condition" in listings[x][y]["properties_hash"]:
-                        if listings[x][y]["properties_hash"]["condition"] == "Near Mint":
-                            print(listings[x][y])
+            if x == '279435':
+                for y in range(len(listings[x]) -1):
+                    if "properties_hash" in listings[x][y]:
+                        if "condition" in listings[x][y]["properties_hash"]:
+                            if listings[x][y]["properties_hash"]["condition"] == "Near Mint":
+                                if listings[x][y]["properties_hash"]["mtg_language"] == "it":
+                                    if listings[x][y]["user"]["can_sell_via_hub"] == True:
+                                        print(listings[x][y])
        
-
-    
-        
-           
-    def test_api(self):
-        test = object
-
-        headers = {
-            'Authorization': f'Bearer {BearerToken.TOKEN.value}'
-        }
-
-        # return type is dict
-        test = requests.get(f'{GamesApi.GET_LISTING_BY_EXPANSION_ID.value}3403', headers=headers).json()
-
-        test_list = test["261058"]
-
-        print(test_list[0])
-        print(test_list[-1])

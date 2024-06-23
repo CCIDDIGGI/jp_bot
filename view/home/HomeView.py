@@ -1,3 +1,4 @@
+import tkinter
 from customtkinter import *
 from custom.CTkScrollableDropdown import CTkScrollableDropdown 
 
@@ -8,8 +9,13 @@ class HomeView(CTkFrame):
         # main setup
         super().__init__(parent)
         self.place(relx = 0.251, rely = 0, relwidth = 0.75, relheight = 1)
+        self.radio_diff_var = tkinter.IntVar(value=1)
 
         # widgets
+        lbl_diff = CTkLabel(self, width=300, text="Minimum price difference between the first and second cheapest listings")
+        radio_diff_perc = CTkRadioButton(self, text="Percentage", variable=self.radio_diff_var, value=1)
+        radio_diff_flat = CTkRadioButton(self, text="Flat value", variable=self.radio_diff_var, value=2)
+        self.entry_diff = CTkEntry(self, width=150)
         self.entry_exp = CTkEntry(self, width=300)
         btn_exp = CTkButton(self, text = "Get all listings for current expansion", state="disabled", command=self.get_listings_by_exp_id)
         self.scr_drpd = CTkScrollableDropdown(self.entry_exp,
@@ -20,8 +26,12 @@ class HomeView(CTkFrame):
                                               autocomplete=True) 
         
         # widgets rendering
-        btn_exp.place(x=400, y=100)
-        self.entry_exp.place(x=100, y=100)
+        lbl_diff.place(x=100, y=50)
+        radio_diff_perc.place(x=100, y=100)
+        radio_diff_flat.place(x=250, y=100)
+        self.entry_diff.place(x=100, y=150)
+        btn_exp.place(x=400, y=250)
+        self.entry_exp.place(x=100, y=250)
 
     def set_controller(self, controller) -> None:
         self.controller = controller
@@ -29,7 +39,7 @@ class HomeView(CTkFrame):
     # check if this is correct in mvc
     def initialize_variables(self) -> None:
         self.exp_list = self.controller.get_expansions_list()
-        self.scr_drpd.configure(values=self.exp_list)     
+        self.scr_drpd.configure(values=self.exp_list)   
 
     def get_listings_by_exp_id(self) -> None:
         exp_id = self.controller.get_exp_id_by_exp_name(self.entry_exp.get())
