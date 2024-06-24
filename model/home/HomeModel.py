@@ -3,7 +3,6 @@ import requests
 from enums.api.ApiEnum import BearerToken, GamesApi
 from enums.games.mtg.mtgEnum import MtgGenerics
 
-
 class HomeModel():
     mtg_exp_dict = list
     # used for ui objects like comboboxes
@@ -77,13 +76,29 @@ class HomeModel():
             print(f"Something went wrong while fetching all the listing by expansion id: {exp_id}")
             return
         
-        for x in listings.keys():
-            if x == '279435':
-                for y in range(len(listings[x]) -1):
-                    if "properties_hash" in listings[x][y]:
-                        if "condition" in listings[x][y]["properties_hash"]:
-                            if listings[x][y]["properties_hash"]["condition"] == "Near Mint":
-                                if listings[x][y]["properties_hash"]["mtg_language"] == "it":
-                                    if listings[x][y]["user"]["can_sell_via_hub"] == True:
-                                        print(listings[x][y])
+        # data analisys
+        for key, value in listings.items():
+            if key == "279435":
+                for item in value:
+                    listing_blueprint_id = item.get("properties_hash", {})
+                    if all([
+                        listing_blueprint_id.get("condition") == "Near Mint",
+                        listing_blueprint_id.get("mtg_language") == "it",
+                        item.get("user", {}).get("can_sell_via_hub") == True,
+                    ]):
+                        self.compare_listings(item)
+        
+        # for x in listings.keys():
+        #     if x == '279435':
+        #         for y in range(len(listings[x]) -1):
+        #             if "properties_hash" in listings[x][y]:
+        #                 if "condition" in listings[x][y]["properties_hash"]:
+        #                     if listings[x][y]["properties_hash"]["condition"] == "Near Mint":
+        #                         if listings[x][y]["properties_hash"]["mtg_language"] == "it":
+        #                             if listings[x][y]["user"]["can_sell_via_hub"] == True:
+        #                                 print(listings[x][y])
+
+    def compare_listings(self, listings: object) -> None:
+        print(listings)
+        
        
