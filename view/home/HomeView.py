@@ -14,8 +14,10 @@ class HomeView(CTkFrame):
 
         # widgets
         lbl_diff = CTkLabel(self, width=300, text="Minimum price difference between the first and second cheapest listings")
-        radio_diff_perc = CTkRadioButton(self, text="Percentage", variable=self.radio_diff_var, value=1)
-        radio_diff_flat = CTkRadioButton(self, text="Flat value", variable=self.radio_diff_var, value=2)
+        radio_diff_perc = CTkRadioButton(self, text="Percentage", variable=self.radio_diff_var, value=1,
+                                          command=self.set_diff_type)
+        radio_diff_flat = CTkRadioButton(self, text="Flat value", variable=self.radio_diff_var, value=2,
+                                         command=self.set_diff_type)
         self.entry_diff = CTkEntry(self, width=150, textvariable=self.entry_diff_var)
         self.lbl_diff_err = CTkLabel(self, width=300, text="Please insert only numerical values!")
         self.entry_exp = CTkEntry(self, width=300)
@@ -46,10 +48,15 @@ class HomeView(CTkFrame):
         self.exp_list = self.controller.get_expansions_list()
         self.scr_drpd.configure(values=self.exp_list)   
 
+    def set_diff_type(self) -> None:
+        self.controller.set_diff_type(self.radio_diff_var.get())
+
     def try_parse_diff_var(self, *args) -> None:
         try:
             if not (not self.entry_diff_var.get()):
                 self.diff_value = int(self.entry_diff_var.get())
+                # probably going to be moved from here
+                self.controller.set_diff_value(self.diff_value)
             self.lbl_diff_err.place_forget()
         except ValueError:
             self.lbl_diff_err.place(x=250, y=150)
@@ -62,36 +69,36 @@ class HomeView(CTkFrame):
 
     # def test_api(self):
 
-    #     headers = {
-    #         'Authorization': f'Bearer {BearerToken.TOKEN.value}'
-    #     }
+        # headers = {
+        #     'Authorization': f'Bearer {BearerToken.TOKEN.value}'
+        # }
 
-    #     payload = {
-    #         "product_id": 233952244,
-    #         "quantity": 1,
-    #         "via_cardtrader_zero": True,
-    #         "billing_address": {
-    #             "name": "name surname",
-    #             "street": "via del bulo 00",
-    #             "zip": "50143",
-    #             "city": "firenze",
-    #             "state_or_province": "FI",
-    #             "country_code": "IT",
-    #             "phone": "123456789"
-    #         },
-    #         "shipping_address": {
-    #             "name": "name surname",
-    #             "street": "via del bulo 00",
-    #             "zip": "50143",
-    #             "city": "firenze",
-    #             "state_or_province": "FI",
-    #             "country_code": "IT"
-    #         }
-    #     }
+        # payload = {
+        #     "product_id": 233952244,
+        #     "quantity": 1,
+        #     "via_cardtrader_zero": True,
+        #     "billing_address": {
+        #         "name": "name surname",
+        #         "street": "via del bulo 00",
+        #         "zip": "50143",
+        #         "city": "firenze",
+        #         "state_or_province": "FI",
+        #         "country_code": "IT",
+        #         "phone": "123456789"
+        #     },
+        #     "shipping_address": {
+        #         "name": "name surname",
+        #         "street": "via del bulo 00",
+        #         "zip": "50143",
+        #         "city": "firenze",
+        #         "state_or_province": "FI",
+        #         "country_code": "IT"
+        #     }
+        # }
 
-    #     response = requests.post(CartApi.ADD_PRODUCT_TO_CART.value, json=payload, headers=headers)
+        # response = requests.post(CartApi.ADD_PRODUCT_TO_CART.value, json=payload, headers=headers)
 
-    #     if response.status_code == 200:
-    #         print("SUCCESS")
-    #     else:
-    #         print(response.status_code, response.text)
+        # if response.status_code == 200:
+        #     print("SUCCESS")
+        # else:
+        #     print(response.status_code, response.text)

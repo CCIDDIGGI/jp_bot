@@ -1,12 +1,16 @@
 
 import requests
-from enums.api.ApiEnum import BearerToken, GamesApi
+from enums.api.ApiEnum import BearerToken, CartApi, GamesApi
 from enums.games.mtg.mtgEnum import MtgGenerics
 
 class HomeModel():
     mtg_exp_dict = list
     # used for ui objects like comboboxes
     mtg_exp_list = list
+
+    diff_value = int
+    # initialized as 1 in case the user does not trigger the method in the view even once
+    diff_type = 1
     
     def __init__(self) -> None:
         self.get_expansions()
@@ -28,7 +32,17 @@ class HomeModel():
             raise ValueError("The MTG expansions list cannot be empty!")
         
         self.mtg_exp_list = value
-    
+
+    # probably going to be replaced by a service
+    def set_diff_type(self, diff_type: int) -> None:
+        self.diff_type = diff_type
+        print(f'printed from model, type is {self.diff_type}')
+
+    # probably going to be replaced by a service
+    def set_diff_value(self, diff_value: int) -> None:
+        self.diff_value = diff_value
+        print(f'printed from model, value is {self.diff_value}')
+
     # gets all the mtg expansions
     def get_expansions(self) -> None:
                 
@@ -77,28 +91,77 @@ class HomeModel():
             return
         
         # data analisys
+        # loop through every key in list
         for key, value in listings.items():
-            if key == "279435":
+            # if key == "279435":
+                # loop through every single listing for the specific key (blueprint_id)
+                items_to_compare = []
                 for item in value:
+                    # create list to store values to compare
                     listing_blueprint_id = item.get("properties_hash", {})
                     if all([
                         listing_blueprint_id.get("condition") == "Near Mint",
                         listing_blueprint_id.get("mtg_language") == "it",
                         item.get("user", {}).get("can_sell_via_hub") == True,
                     ]):
-                        self.compare_listings(item)
-        
-        # for x in listings.keys():
-        #     if x == '279435':
-        #         for y in range(len(listings[x]) -1):
-        #             if "properties_hash" in listings[x][y]:
-        #                 if "condition" in listings[x][y]["properties_hash"]:
-        #                     if listings[x][y]["properties_hash"]["condition"] == "Near Mint":
-        #                         if listings[x][y]["properties_hash"]["mtg_language"] == "it":
-        #                             if listings[x][y]["user"]["can_sell_via_hub"] == True:
-        #                                 print(listings[x][y])
+                        # main logic
+                        # set first item for each key
+                        if  len(items_to_compare) == 0:
+                            items_to_compare.append(item)
 
-    def compare_listings(self, listings: object) -> None:
-        print(listings)
+                        # if the first item is already fetched, compare the current item with the first
+                        else:
+
+                            # check if the i-th item has a price different from the first item
+                            if item["price_cents"] != items_to_compare[0]["price_cents"]:
+                                # check difference type (percentage or flat value)
+                                # percentage
+                                if self.diff_type == 1:
+                                    if (item["price_cents"] - ((self.diff_value / 100) * item["price_cents"])) > items_to_compare[0]["price_cents"]:
+                                        # add item to cart
+                                        print(f"{items_to_compare[0]["name_en"]}, listed for: {items_to_compare[0]["price_cents"]} is at least {self.diff_value} % cheaper then {item["price_cents"]}, adding it to cart...")
+                                        self.add_item_to_cart(items_to_compare[0]["id"])
+                                        # remove break if you want to get multiple cards
+                                        break
+                
+
+
+
+
+    def add_item_to_cart(self, id: int) -> None:
+        headers = {
+            'Authorization': f'Bearer {BearerToken.TOKEN.value}'
+        }
+
+        payload = {
+            "product_id": id,
+            "quantity": 1,
+            "via_cardtrader_zero": True,
+            "billing_address": {
+                "name": "name surname",
+                "street": "via del bulo 00",
+                "zip": "50143",
+                "city": "firenze",
+                "state_or_province": "FI",
+                "country_code": "IT",
+                "phone": "123456789"
+            },
+            "shipping_address": {
+                "name": "name surname",
+                "street": "via del bulo 00",
+                "zip": "50143",
+                "city": "firenze",
+                "state_or_province": "FI",
+                "country_code": "IT"
+            }
+        }
+
+        response = requests.post(CartApi.ADD_PRODUCT_TO_CART.value, json=payload, headers=headers)
+
+        if response.status_code == 200:
+            print("SUCCESS")
+        else:
+            print(response.status_code, response.text)
+    
         
        
