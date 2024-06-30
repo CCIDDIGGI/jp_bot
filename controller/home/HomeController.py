@@ -16,6 +16,9 @@ class HomeController():
     def set_diff_value(self, diff_value: int) -> None:
         self.model.set_diff_value(diff_value)
 
+    def set_maximum_threshold_value(self, maximum_threshold_value: int) -> None:
+        self.model.set_maximum_threshold_value(maximum_threshold_value)
+
     def get_exp_id_by_exp_name(self, exp_name: str) -> int:
         return self.model.get_exp_id_by_exp_name(exp_name)
     

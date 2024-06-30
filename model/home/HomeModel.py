@@ -11,6 +11,7 @@ class HomeModel():
     diff_value = int
     # initialized as 1 in case the user does not trigger the method in the view even once
     diff_type = 1
+    maximum_threshold = 0
     
     def __init__(self) -> None:
         self.get_expansions()
@@ -42,6 +43,12 @@ class HomeModel():
     def set_diff_value(self, diff_value: int) -> None:
         self.diff_value = diff_value
         print(f'printed from model, value is {self.diff_value}')
+
+    # probably going to be replaced by a service
+    def set_maximum_threshold_value(self, maximum_threshold_value: int) -> None:
+        # converting from eur to cents
+        self.maximum_threshold = maximum_threshold_value * 100
+        print(f'printed from model, threshold max value is {self.maximum_threshold}')
 
     # gets all the mtg expansions
     def get_expansions(self) -> None:
@@ -119,8 +126,13 @@ class HomeModel():
                                 if self.diff_type == 1:
                                     if (item["price_cents"] - ((self.diff_value / 100) * item["price_cents"])) > items_to_compare[0]["price_cents"]:
                                         # add item to cart
-                                        print(f"{items_to_compare[0]["name_en"]}, listed for: {items_to_compare[0]["price_cents"]} is at least {self.diff_value} % cheaper then {item["price_cents"]}, adding it to cart...")
+                                        print(items_to_compare[0]["blueprint_id"])
+                                        print(f"{items_to_compare[0]["name_en"]}, listed for: {items_to_compare[0]["price_cents"]} by: {items_to_compare[0]['user']["username"]} is at least {self.diff_value} % cheaper then {item["price_cents"]}  by: {item['user']["username"]} , adding it to cart...")
                                         self.add_item_to_cart(items_to_compare[0]["id"])
+                                        self.maximum_threshold -= items_to_compare[0]["price_cents"]
+                                        if self.maximum_threshold <= 0:
+                                            print("Maximum price threshold exceeded, exiting...")
+                                            return
                                         # remove break if you want to get multiple cards
                                         break
                 
