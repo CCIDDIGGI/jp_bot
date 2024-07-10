@@ -12,10 +12,11 @@ class HomeModel():
     # initialized as 1 in case the user does not trigger the method in the view even once
     diff_type = 1
     maximum_threshold = 0
-    
+    support_threshold_var = 0
+        
     def __init__(self) -> None:
         self.get_expansions()
-
+        
     def get_mtg_exp_dict(self) -> dict:
         return self.mtg_exp_dict
 
@@ -48,6 +49,7 @@ class HomeModel():
     def set_maximum_threshold_value(self, maximum_threshold_value: int) -> None:
         # converting from eur to cents
         self.maximum_threshold = maximum_threshold_value * 100
+        self.support_threshold_var = self.maximum_threshold
         print(f'printed from model, threshold max value is {self.maximum_threshold}')
 
     # gets all the mtg expansions
@@ -75,7 +77,7 @@ class HomeModel():
         return 0
                 
     
-    def get_listings_by_exp_id(self, exp_id) -> None:
+    async def get_listings_by_exp_id(self, exp_id) -> None:
         listings = object
 
         headers = {
@@ -129,10 +131,13 @@ class HomeModel():
                                         print(items_to_compare[0]["blueprint_id"])
                                         print(f"{items_to_compare[0]["name_en"]}, listed for: {items_to_compare[0]["price_cents"]} by: {items_to_compare[0]['user']["username"]} is at least {self.diff_value} % cheaper then {item["price_cents"]}  by: {item['user']["username"]} , adding it to cart...")
                                         self.add_item_to_cart(items_to_compare[0]["id"])
-                                        self.maximum_threshold -= items_to_compare[0]["price_cents"]
-                                        if self.maximum_threshold <= 0:
-                                            print("Maximum price threshold exceeded, exiting...")
-                                            return
+                                        
+                                        # check if maximum threshold is set
+                                        if self.maximum_threshold > 0:
+                                            self.support_threshold_var -= items_to_compare[0]["price_cents"]
+                                            if self.support_threshold_var <= 0:
+                                                print("Maximum price threshold exceeded, exiting...")
+                                                return
                                         # remove break if you want to get multiple cards
                                         break
                 

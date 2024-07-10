@@ -11,8 +11,8 @@ class HomeView(CTkFrame):
         super().__init__(parent)
         self.place(relx = 0.251, rely = 0, relwidth = 0.75, relheight = 1)
         self.radio_diff_var = tkinter.IntVar(value=1)
-        self.entry_diff_var = tkinter.StringVar()
-        self.entry_maximum_threshold_var = tkinter.StringVar()
+        self.entry_diff_var = tkinter.StringVar(value='10')
+        self.entry_maximum_threshold_var = tkinter.StringVar(value='50')
 
         # widgets
         lbl_diff = CTkLabel(self, width=300, text="Minimum price difference between the first and second cheapest listings")
@@ -61,20 +61,20 @@ class HomeView(CTkFrame):
 
     def try_parse_diff_var(self, *args) -> None:
         try:
-            if not (not self.entry_diff_var.get()):
-                self.diff_value = int(self.entry_diff_var.get())
-                # probably going to be moved from here
-                self.controller.set_diff_value(self.diff_value)
+            # replace 0 with settings default value
+            self.diff_value = int(self.entry_diff_var.get()) if self.entry_diff_var.get() else 0
+            # probably going to be moved from here
+            self.controller.set_diff_value(self.diff_value)
             self.lbl_diff_err.place_forget()
         except ValueError:
             self.lbl_diff_err.place(x=250, y=150)
             
     def try_parse_maximum_threshold_var(self, *args) -> None:
         try:
-            if not (not self.entry_maximum_threshold_var.get()):
-                self.maximum_threshold_value = int(self.entry_maximum_threshold_var.get())
-                # probably going to be moved from here
-                self.controller.set_maximum_threshold_value(self.maximum_threshold_value)
+            # replace 0 with settings default value
+            self.maximum_threshold_value = int(self.entry_maximum_threshold_var.get()) if self.entry_maximum_threshold_var.get() else 0
+            # probably going to be moved from here
+            self.controller.set_maximum_threshold_value(self.maximum_threshold_value)
             self.lbl_maximum_threshold_err.place_forget()
         except ValueError:
             self.lbl_maximum_threshold_err.place(x=250, y=250)      
