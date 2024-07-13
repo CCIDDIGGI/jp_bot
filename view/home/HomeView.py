@@ -33,6 +33,8 @@ class HomeView(CTkFrame):
                                                   or self.entry_exp.insert(0, e) 
                                                   or btn_exp.configure(state="normal"),
                                               autocomplete=True) 
+        self.btn_start_fetch = CTkButton(self, text = "Start process", state="disabled", command=self.start_fetch)
+        self.btn_stop_fetch = CTkButton(self, text = "Stop process", state="disabled", command=self.stop_fetch)
         
         # widgets callback
         self.entry_diff_var.trace_add("write", self.try_parse_diff_var)
@@ -47,7 +49,9 @@ class HomeView(CTkFrame):
         self.entry_maximum_threshold.place(x=100, y=250)
         self.entry_exp.place(x=100, y=300)
         btn_exp.place(x=400, y=300)
-
+        self.btn_start_fetch.place(x=100, y=350)
+        self.btn_stop_fetch.place(x=300, y=350)
+        
     def set_controller(self, controller) -> None:
         self.controller = controller
         
@@ -82,4 +86,10 @@ class HomeView(CTkFrame):
     def get_listings_by_exp_id(self) -> None:
         exp_id = self.controller.get_exp_id_by_exp_name(self.entry_exp.get())
         self.controller.get_listings_by_exp_id(exp_id)
+        
+    def start_fetch(self) -> None:
+        pass
+
+    def stop_fetch(self) -> None:
+        pass
         

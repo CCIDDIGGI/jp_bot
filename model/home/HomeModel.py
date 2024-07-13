@@ -1,4 +1,5 @@
 
+import aiohttp
 import requests
 from enums.api.ApiEnum import BearerToken, CartApi, GamesApi
 from enums.games.mtg.mtgEnum import MtgGenerics
@@ -84,20 +85,23 @@ class HomeModel():
             'Authorization': f'Bearer {BearerToken.TOKEN.value}'
         }
         
-        try:
-             listings = requests.get(f'{GamesApi.GET_LISTING_BY_EXPANSION_ID.value}{exp_id}', headers=headers).json()
-        except requests.exceptions.ConnectionError as cer:
-            print(f"A connection error occurred: {cer}")
-            return
-        # except requests.exceptions.ConnectTimeout as cto:
-        #     print(f"The request timed out while trying to connect to the remote server: {cto}")
-        #     return
-        except requests.exceptions.HTTPError as httperr:
-            print(f"An HTTP error occurred: {httperr}")
-            return
-        except:
-            print(f"Something went wrong while fetching all the listing by expansion id: {exp_id}")
-            return
+        async with aiohttp.ClientSession() as session:
+            try:
+                async with session.get(f'{GamesApi.GET_LISTING_BY_EXPANSION_ID.value}{exp_id}', headers=headers) as response:
+                    response.raise_for_status()
+                    listings = await response.json() 
+            except aiohttp.ClientConnectionError as cce:
+                print(f"A connection error occurred: {cce}")
+                return
+            # except requests.exceptions.ConnectTimeout as cto:
+            #     print(f"The request timed out while trying to connect to the remote server: {cto}")
+            #     return
+            except aiohttp.ClientResponseError as cre:
+                print(f"Client response error: {cre}")
+                return
+            except Exception as e:
+                print(f"Something went wrong while fetching all the listing by expansion id: {exp_id}, error is {e}")
+                return
         
         # data analisys
         # loop through every key in list
@@ -130,7 +134,7 @@ class HomeModel():
                                         # add item to cart
                                         print(items_to_compare[0]["blueprint_id"])
                                         print(f"{items_to_compare[0]["name_en"]}, listed for: {items_to_compare[0]["price_cents"]} by: {items_to_compare[0]['user']["username"]} is at least {self.diff_value} % cheaper then {item["price_cents"]}  by: {item['user']["username"]} , adding it to cart...")
-                                        self.add_item_to_cart(items_to_compare[0]["id"])
+                                        await self.add_item_to_cart(items_to_compare[0]["id"])
                                         
                                         # check if maximum threshold is set
                                         if self.maximum_threshold > 0:
@@ -145,7 +149,7 @@ class HomeModel():
 
 
 
-    def add_item_to_cart(self, id: int) -> None:
+    async def add_item_to_cart(self, id: int) -> None:
         headers = {
             'Authorization': f'Bearer {BearerToken.TOKEN.value}'
         }
