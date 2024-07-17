@@ -19,8 +19,12 @@ class HomeController():
     def set_maximum_threshold_value(self, maximum_threshold_value: int) -> None:
         self.model.set_maximum_threshold_value(maximum_threshold_value)
 
-    def get_exp_id_by_exp_name(self, exp_name: str) -> int:
-        return self.model.get_exp_id_by_exp_name(exp_name)
+    def set_exp_id_by_exp_name(self, exp_name: str) -> int:
+        return self.model.set_exp_id_by_exp_name(exp_name)
+
+    def start_fetch(self) -> None:
+        self.model.start_fetch()
+
+    def stop_fetch(self) -> None:
+        self.model.stop_fetch()
     
-    def get_listings_by_exp_id(self, exp_id: int) -> None:
-        self.model.get_listings_by_exp_id(exp_id)

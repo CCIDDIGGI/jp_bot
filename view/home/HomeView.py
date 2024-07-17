@@ -26,15 +26,17 @@ class HomeView(CTkFrame):
         self.lbl_diff_err = CTkLabel(self, width=300, text="Please insert only numerical values!")
         self.lbl_maximum_threshold_err = CTkLabel(self, width=300, text="Please insert only numerical values!")
         self.entry_exp = CTkEntry(self, width=300)
-        btn_exp = CTkButton(self, text = "Get all listings for current expansion", state="disabled", command=self.get_listings_by_exp_id)
+        btn_exp = CTkButton(self, text = "Get all listings for current expansion", state="disabled", command=self.set_listings_exp_id)
+        self.btn_start_fetch = CTkButton(self, text = "Start process", state="disabled", command=self.start_fetch)
+        self.btn_stop_fetch = CTkButton(self, text = "Stop process", state="disabled", command=self.stop_fetch)
+        # moved down temporarly
         self.scr_drpd = CTkScrollableDropdown(self.entry_exp,
                                               command=lambda e: 
                                                   self.entry_exp.delete(0,'end') 
                                                   or self.entry_exp.insert(0, e) 
-                                                  or btn_exp.configure(state="normal"),
+                                                  or btn_exp.configure(state="normal")
+                                                  or self.btn_start_fetch.configure(state="normal"),
                                               autocomplete=True) 
-        self.btn_start_fetch = CTkButton(self, text = "Start process", state="disabled", command=self.start_fetch)
-        self.btn_stop_fetch = CTkButton(self, text = "Stop process", state="disabled", command=self.stop_fetch)
         
         # widgets callback
         self.entry_diff_var.trace_add("write", self.try_parse_diff_var)
@@ -83,13 +85,20 @@ class HomeView(CTkFrame):
         except ValueError:
             self.lbl_maximum_threshold_err.place(x=250, y=250)      
 
-    def get_listings_by_exp_id(self) -> None:
-        exp_id = self.controller.get_exp_id_by_exp_name(self.entry_exp.get())
-        self.controller.get_listings_by_exp_id(exp_id)
+    def set_listings_exp_id(self) -> None:
+        if self.entry_exp.get():    
+            self.controller.set_exp_id_by_exp_name(self.entry_exp.get())
         
     def start_fetch(self) -> None:
-        pass
+        if self.controller:
+            self.controller.start_fetch()
+            self.btn_start_fetch.configure(state="disabled")
+            self.btn_stop_fetch.configure(state="normal")
 
     def stop_fetch(self) -> None:
-        pass
+        if self.controller:
+            self.controller.stop_fetch()
+            self.btn_start_fetch.configure(state="normal")
+            self.btn_stop_fetch.configure(state="disabled")
+
         

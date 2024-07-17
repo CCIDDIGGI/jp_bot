@@ -1,6 +1,8 @@
 
 import aiohttp
+import asyncio
 import requests
+from threading import Event, Thread
 from enums.api.ApiEnum import BearerToken, CartApi, GamesApi
 from enums.games.mtg.mtgEnum import MtgGenerics
 
@@ -9,11 +11,16 @@ class HomeModel():
     # used for ui objects like comboboxes
     mtg_exp_list = list
 
+    # probably to initialize this
     diff_value = int
     # initialized as 1 in case the user does not trigger the method in the view even once
     diff_type = 1
     maximum_threshold = 0
     support_threshold_var = 0
+    exp_id = 0
+
+    stop_event = Event()
+    fetch_thread = None
         
     def __init__(self) -> None:
         self.get_expansions()
@@ -35,6 +42,11 @@ class HomeModel():
             raise ValueError("The MTG expansions list cannot be empty!")
         
         self.mtg_exp_list = value
+    
+    def set_listings_exp_id(self, value: int) -> None:
+        if not value:
+            raise ValueError("expansion list id cannot be empty")
+        self.exp_id = value
 
     # probably going to be replaced by a service
     def set_diff_type(self, diff_type: int) -> None:
@@ -71,16 +83,14 @@ class HomeModel():
                 
         self.set_mtg_exp_list(exp_list)
         
-    def get_exp_id_by_exp_name(self, exp_name: str) -> int:
+    def set_exp_id_by_exp_name(self, exp_name: str) -> None:
         for x in range(len(self.mtg_exp_dict) -1):
             if self.mtg_exp_dict[x]["name"] == exp_name:
-                return self.mtg_exp_dict[x]["id"]
-        return 0
+                return self.set_listings_exp_id(self.mtg_exp_dict[x]["id"])
+
                 
     
-    async def get_listings_by_exp_id(self, exp_id) -> None:
-        listings = object
-
+    async def get_listings_by_exp_id(self, exp_id, process_callback) -> None:
         headers = {
             'Authorization': f'Bearer {BearerToken.TOKEN.value}'
         }
@@ -90,6 +100,9 @@ class HomeModel():
                 async with session.get(f'{GamesApi.GET_LISTING_BY_EXPANSION_ID.value}{exp_id}', headers=headers) as response:
                     response.raise_for_status()
                     listings = await response.json() 
+                    if self.stop_event.is_set():
+                        return
+                    await process_callback(listings)
             except aiohttp.ClientConnectionError as cce:
                 print(f"A connection error occurred: {cce}")
                 return
@@ -102,48 +115,52 @@ class HomeModel():
             except Exception as e:
                 print(f"Something went wrong while fetching all the listing by expansion id: {exp_id}, error is {e}")
                 return
-        
+    
+    async def process_listings(self, listings) -> None:
         # data analisys
         # loop through every key in list
         for key, value in listings.items():
             # if key == "279435":
-                # loop through every single listing for the specific key (blueprint_id)
-                items_to_compare = []
-                for item in value:
-                    # create list to store values to compare
-                    listing_blueprint_id = item.get("properties_hash", {})
-                    if all([
-                        listing_blueprint_id.get("condition") == "Near Mint",
-                        listing_blueprint_id.get("mtg_language") == "it",
-                        item.get("user", {}).get("can_sell_via_hub") == True,
-                    ]):
-                        # main logic
-                        # set first item for each key
-                        if  len(items_to_compare) == 0:
-                            items_to_compare.append(item)
+            # loop through every single listing for the specific key (blueprint_id)
+            items_to_compare = []
+            for item in value:
+                # create list to store values to compare
+                listing_blueprint_id = item.get("properties_hash", {})
+                if all([
+                    listing_blueprint_id.get("condition") == "Near Mint",
+                    listing_blueprint_id.get("mtg_language") == "it",
+                    item.get("user", {}).get("can_sell_via_hub") == True,
+                ]):
+                    # main logic
+                    # set first item for each key
+                    if  len(items_to_compare) == 0:
+                        items_to_compare.append(item)
 
-                        # if the first item is already fetched, compare the current item with the first
-                        else:
+                    # if the first item is already fetched, compare the current item with the first
+                    else:
 
-                            # check if the i-th item has a price different from the first item
-                            if item["price_cents"] != items_to_compare[0]["price_cents"]:
-                                # check difference type (percentage or flat value)
-                                # percentage
-                                if self.diff_type == 1:
-                                    if (item["price_cents"] - ((self.diff_value / 100) * item["price_cents"])) > items_to_compare[0]["price_cents"]:
-                                        # add item to cart
-                                        print(items_to_compare[0]["blueprint_id"])
-                                        print(f"{items_to_compare[0]["name_en"]}, listed for: {items_to_compare[0]["price_cents"]} by: {items_to_compare[0]['user']["username"]} is at least {self.diff_value} % cheaper then {item["price_cents"]}  by: {item['user']["username"]} , adding it to cart...")
-                                        await self.add_item_to_cart(items_to_compare[0]["id"])
-                                        
-                                        # check if maximum threshold is set
-                                        if self.maximum_threshold > 0:
-                                            self.support_threshold_var -= items_to_compare[0]["price_cents"]
-                                            if self.support_threshold_var <= 0:
-                                                print("Maximum price threshold exceeded, exiting...")
-                                                return
-                                        # remove break if you want to get multiple cards
-                                        break
+                        # check if the i-th item has a price different from the first item
+                        if item["price_cents"] != items_to_compare[0]["price_cents"]:
+                            # check difference type (percentage or flat value)
+                            # percentage
+                            if self.diff_type == 1:
+                                if (item["price_cents"] - ((self.diff_value / 100) * item["price_cents"])) > items_to_compare[0]["price_cents"]:
+                                    # add item to cart
+                                    print(items_to_compare[0]["blueprint_id"])
+                                    print(f"{items_to_compare[0]["name_en"]}, listed for: {items_to_compare[0]["price_cents"]} by: {items_to_compare[0]['user']["username"]} is at least {self.diff_value} % cheaper then {item["price_cents"]}  by: {item['user']["username"]} , adding it to cart...")
+                                    await self.add_item_to_cart(items_to_compare[0]["id"])
+                                    
+                                    # check if maximum threshold is set
+                                    if self.maximum_threshold > 0:
+                                        self.support_threshold_var -= items_to_compare[0]["price_cents"]
+                                        if self.support_threshold_var <= 0:
+                                            print("Maximum price threshold exceeded, exiting...")
+                                            return
+                                    # remove break if you want to get multiple cards
+                                    break
+
+                if self.stop_event.is_set():
+                    return
                 
 
 
@@ -183,6 +200,20 @@ class HomeModel():
             print("SUCCESS")
         else:
             print(response.status_code, response.text)
-    
-        
+
+    def start_fetch(self) -> None:
+        self.stop_event.clear()
+        self.fetch_thread = Thread(target=self.run_async_task, args=(self.get_listings_by_exp_id(self.exp_id, self.process_listings),))
+        self.fetch_thread.start()
+
+    def stop_fetch(self) -> None:
+        self.stop_event.set()
+        if self.fetch_thread and self.fetch_thread.is_alive():
+            self.fetch_thread.join()
+
        
+    def run_async_task(self, coro):
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        loop.run_until_complete(coro)
+        loop.close()
