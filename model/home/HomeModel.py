@@ -92,13 +92,17 @@ class HomeModel():
     
     async def get_listings_by_exp_id(self, exp_id, process_callback) -> None:
         headers = {
-            'Authorization': f'Bearer {BearerToken.TOKEN.value}'
+            'Authorization': f'Bearer {BearerToken.TOKEN.value}',
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0'
         }
         
         async with aiohttp.ClientSession() as session:
             try:
                 async with session.get(f'{GamesApi.GET_LISTING_BY_EXPANSION_ID.value}{exp_id}', headers=headers) as response:
                     response.raise_for_status()
+                    print(response.headers)
                     listings = await response.json() 
                     if self.stop_event.is_set():
                         return
@@ -155,6 +159,24 @@ class HomeModel():
                                         self.support_threshold_var -= items_to_compare[0]["price_cents"]
                                         if self.support_threshold_var <= 0:
                                             print("Maximum price threshold exceeded, exiting...")
+                                            self.stop_fetch()
+                                            return
+                                    # remove break if you want to get multiple cards
+                                    break
+                            # flat value
+                            if self.diff_type == 2:
+                                if items_to_compare[0]["price_cents"] < (item["price_cents"] - (self.diff_value * 100)):
+                                    # add item to cart
+                                    print(items_to_compare[0]["blueprint_id"])
+                                    print(f"{items_to_compare[0]["name_en"]}, listed for: {items_to_compare[0]["price_cents"]} by: {items_to_compare[0]['user']["username"]} is at least {self.diff_value}€ cheaper then {item["price_cents"]}  by: {item['user']["username"]} , adding it to cart...")
+                                    await self.add_item_to_cart(items_to_compare[0]["id"])
+                                    
+                                    # check if maximum threshold is set
+                                    if self.maximum_threshold > 0:
+                                        self.support_threshold_var -= items_to_compare[0]["price_cents"]
+                                        if self.support_threshold_var <= 0:
+                                            print("Maximum price threshold exceeded, exiting...")
+                                            self.stop_fetch()
                                             return
                                     # remove break if you want to get multiple cards
                                     break
