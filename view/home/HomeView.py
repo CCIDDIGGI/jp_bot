@@ -37,6 +37,7 @@ class HomeView(CTkFrame):
                                                   or btn_exp.configure(state="normal")
                                                   or self.btn_start_fetch.configure(state="normal"),
                                               autocomplete=True) 
+        self.lbl_fetch_status = CTkLabel(self, width=300, text="")
         
         # widgets callback
         self.entry_diff_var.trace_add("write", self.try_parse_diff_var)
@@ -53,6 +54,7 @@ class HomeView(CTkFrame):
         btn_exp.place(x=400, y=300)
         self.btn_start_fetch.place(x=100, y=350)
         self.btn_stop_fetch.place(x=300, y=350)
+        self.lbl_fetch_status.place(x=100, y=400)
         
     def set_controller(self, controller) -> None:
         self.controller = controller
@@ -100,5 +102,10 @@ class HomeView(CTkFrame):
             self.controller.stop_fetch()
             self.btn_start_fetch.configure(state="normal")
             self.btn_stop_fetch.configure(state="disabled")
-
-        
+    
+    def change_btn_configuration(self) -> None:
+        self.btn_start_fetch.configure(state="normal")
+        self.btn_stop_fetch.configure(state="disabled")
+    
+    def config_status_text(self, msg: str) -> None:
+        self.lbl_fetch_status.configure(text=msg)        

@@ -5,6 +5,7 @@ class HomeController():
         self.model = model
         self.view = view
         self.view.set_controller(self)
+        self.model.set_controller(self)
         self.view.initialize_variables()
         
     def get_expansions_list(self) -> list:
@@ -28,3 +29,8 @@ class HomeController():
     def stop_fetch(self) -> None:
         self.model.stop_fetch()
     
+    def change_btn_configuration(self) -> None:
+        self.view.change_btn_configuration()
+    
+    def send_info_to_view(self, msg: str) -> None:
+        self.view.config_status_text(msg)

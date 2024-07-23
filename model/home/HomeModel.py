@@ -24,6 +24,9 @@ class HomeModel():
         
     def __init__(self) -> None:
         self.get_expansions()
+
+    def set_controller(self, controller) -> None:
+        self.controller = controller
         
     def get_mtg_exp_dict(self) -> dict:
         return self.mtg_exp_dict
@@ -150,15 +153,15 @@ class HomeModel():
                             if self.diff_type == 1:
                                 if (item["price_cents"] - ((self.diff_value / 100) * item["price_cents"])) > items_to_compare[0]["price_cents"]:
                                     # add item to cart
-                                    print(items_to_compare[0]["blueprint_id"])
-                                    print(f"{items_to_compare[0]["name_en"]}, listed for: {items_to_compare[0]["price_cents"]} by: {items_to_compare[0]['user']["username"]} is at least {self.diff_value} % cheaper then {item["price_cents"]}  by: {item['user']["username"]} , adding it to cart...")
+                                    self.controller.send_info_to_view(f"{items_to_compare[0]["name_en"]}, listed for: {items_to_compare[0]["price_cents"]} by: {items_to_compare[0]['user']["username"]} is at least {self.diff_value} % cheaper then {item["price_cents"]}  by: {item['user']["username"]} , adding it to cart...")
                                     await self.add_item_to_cart(items_to_compare[0]["id"])
                                     
                                     # check if maximum threshold is set
                                     if self.maximum_threshold > 0:
                                         self.support_threshold_var -= items_to_compare[0]["price_cents"]
                                         if self.support_threshold_var <= 0:
-                                            print("Maximum price threshold exceeded, exiting...")
+                                            self.controller.send_info_to_view("Maximum price threshold exceeded, exiting...")
+                                            self.controller.change_btn_configuration()
                                             self.stop_fetch()
                                             return
                                     # remove break if you want to get multiple cards
@@ -167,15 +170,15 @@ class HomeModel():
                             if self.diff_type == 2:
                                 if items_to_compare[0]["price_cents"] < (item["price_cents"] - (self.diff_value * 100)):
                                     # add item to cart
-                                    print(items_to_compare[0]["blueprint_id"])
-                                    print(f"{items_to_compare[0]["name_en"]}, listed for: {items_to_compare[0]["price_cents"]} by: {items_to_compare[0]['user']["username"]} is at least {self.diff_value}€ cheaper then {item["price_cents"]}  by: {item['user']["username"]} , adding it to cart...")
+                                    self.controller.send_info_to_view(f"{items_to_compare[0]["name_en"]}, listed for: {items_to_compare[0]["price_cents"]} by: {items_to_compare[0]['user']["username"]} is at least {self.diff_value}€ cheaper then {item["price_cents"]}  by: {item['user']["username"]} , adding it to cart...")
                                     await self.add_item_to_cart(items_to_compare[0]["id"])
                                     
                                     # check if maximum threshold is set
                                     if self.maximum_threshold > 0:
                                         self.support_threshold_var -= items_to_compare[0]["price_cents"]
                                         if self.support_threshold_var <= 0:
-                                            print("Maximum price threshold exceeded, exiting...")
+                                            self.controller.send_info_to_view("Maximum price threshold exceeded, exiting...")
+                                            self.controller.change_btn_configuration()
                                             self.stop_fetch()
                                             return
                                     # remove break if you want to get multiple cards
@@ -219,9 +222,9 @@ class HomeModel():
         response = requests.post(CartApi.ADD_PRODUCT_TO_CART.value, json=payload, headers=headers)
 
         if response.status_code == 200:
-            print("SUCCESS")
+            self.controller.send_info_to_view("Item succesfully added to cart!")
         else:
-            print(response.status_code, response.text)
+            self.controller.send_info_to_view(f"An error occurred while addding the item to cart: {response.text}")
 
     def start_fetch(self) -> None:
         self.stop_event.clear()
@@ -232,6 +235,7 @@ class HomeModel():
         self.stop_event.set()
         if self.fetch_thread and self.fetch_thread.is_alive():
             self.fetch_thread.join()
+        self.support_threshold_var = self.maximum_threshold
 
        
     def run_async_task(self, coro):
