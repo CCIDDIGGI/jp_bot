@@ -8,6 +8,9 @@ class HomeController():
         self.model.set_controller(self)
         self.view.initialize_variables()
         
+    def assign_default_values(self, default_diff_value: int, default_max_threshold_value: int) -> None:
+        self.model.assign_default_values(default_diff_value, default_max_threshold_value)
+        
     def get_expansions_list(self) -> list:
         return self.model.get_mtg_exp_list()
     

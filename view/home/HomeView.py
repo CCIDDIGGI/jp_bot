@@ -62,7 +62,9 @@ class HomeView(CTkFrame):
     # check if this is correct in mvc
     def initialize_variables(self) -> None:
         self.exp_list = self.controller.get_expansions_list()
-        self.scr_drpd.configure(values=self.exp_list)   
+        self.scr_drpd.configure(values=self.exp_list)  
+        # hard coded for now, in the future it will fetch those values from a config file or page 
+        self.controller.assign_default_values(10, 50)
 
     def set_diff_type(self) -> None:
         self.controller.set_diff_type(self.radio_diff_var.get())

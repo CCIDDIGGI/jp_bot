@@ -28,6 +28,10 @@ class HomeModel():
     def set_controller(self, controller) -> None:
         self.controller = controller
         
+    def assign_default_values(self,  default_diff_value: int, default_max_threshold_value: int) -> None:
+        self.diff_value = default_diff_value
+        self.maximum_threshold = default_max_threshold_value * 100
+        
     def get_mtg_exp_dict(self) -> dict:
         return self.mtg_exp_dict
 
