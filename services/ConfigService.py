@@ -4,17 +4,59 @@ class ConfigService():
     cfg_file_dir = 'C:\\jp_bot_config'
     cfg_file_name = 'jp_bot_config.txt'
     cfg_file_path = os.path.join(cfg_file_dir, cfg_file_name)
-    auth_token = ''
-    remember_var = 'off'
+    default_config = {
+        "Auth token": "",
+        "Remember auth token": "off",
+        "Billing address name": "",
+        "Billing Street": "",
+        "Billing zip": "",
+        "Billing city": "",
+        "Billing state or province": "",
+        "Billing country code": "",
+        "Billing phone": "",
+        "Shipping name": "",
+        "Shipping street": "",
+        "Shipping zip": "",
+        "Shipping city": "",
+        "Shipping state or province": "",
+        "Shipping country code": ""
+    }
+
+    config = {}
 
     def __init__(self) -> None:
-        self.init_cfg()
+        if not self.init_cfg_dir_and_file():
+            self.init_cfg_dict()
+        else: 
+            self.config = self.default_config
 
-    def init_cfg(self) -> None:
-        self.check_for_cfg_file_dir()
-        self.check_for_cfg_file()
-        with open(self.cfg_file_path, 'a') as file:
-            file.write(f"Remember auth token: {self.remember_var}")  
+    def init_cfg_dir_and_file(self) -> bool:
+        # if folder does not exist
+        if not os.path.exists(self.cfg_file_dir):
+            os.makedirs(self.cfg_file_dir)
+            # this snippet needs to be reusable, do a function
+            # with open(self.cfg_file_path, 'w') as file:
+            #     file.write("-----Jeff Pesos Bot Configuration File-----\n\n")    
+            for key in self.default_config:
+                with open(self.cfg_file_path, 'a') as file:
+                    file.write(f"{key}: {self.default_config[key]}\n")    
+            return True  
+        # if folder exists but not the config file
+        if not os.path.exists(self.cfg_file_path):                       
+            # with open(self.cfg_file_path, 'w') as file:
+            #     file.write("-----Jeff Pesos Bot Configuration File-----\n\n")    
+            for key in self.default_config:
+                with open(self.cfg_file_path, 'a') as file:
+                    file.write(f"{key}: {self.default_config[key]}\n") 
+            return True
+        return False
+
+    def init_cfg_dict(self) -> None:
+        with open(self.cfg_file_path, 'r') as file:
+            lines = file.readlines()
+            for line in lines:
+                key, value = line.split(":", 1)
+                self.config[key] = value.strip()            
 
     def set_auth_token(self, token: str) -> None:
         self.auth_token = token
@@ -24,17 +66,12 @@ class ConfigService():
         return self.auth_token
     
     def write_login_config(self, remember: str) -> None:
-        self.check_for_cfg_file_dir()
-        self.check_for_cfg_file()
-        print(f"remember me is set to> {remember}")
+        # cancel current config content
+        with open(self.cfg_file_path, 'w') as file:
+            pass
+        self.config["Remember auth token"] = remember
+        for key in self.config:
+            with open(self.cfg_file_path, 'a') as file:
+                file.write(f"{key}: {self.config[key]}\n")     
+            
 
-    def check_for_cfg_file_dir(self) -> None:
-        if not os.path.exists(self.cfg_file_dir):
-            os.makedirs(self.cfg_file_dir)
-            with open(self.cfg_file_path, 'w') as file:
-                file.write("-----Jeff Pesos Bot Configuration File-----\n\n")           
-
-    def check_for_cfg_file(self) -> None:
-        if not os.path.exists(self.cfg_file_path):     
-            with open(self.cfg_file_path, 'w') as file:
-                file.write("-----Jeff Pesos Bot Configuration File-----\n\n")
