@@ -5,6 +5,7 @@ import requests
 from threading import Event, Thread
 from enums.api.ApiEnum import BearerToken, CartApi, GamesApi
 from enums.games.mtg.mtgEnum import MtgGenerics
+from services.ConfigService import ConfigService
 
 class HomeModel():
     mtg_exp_dict = list
@@ -23,6 +24,7 @@ class HomeModel():
     fetch_thread = None
         
     def __init__(self) -> None:
+        self.config_service = ConfigService()
         self.get_expansions()
 
     def set_controller(self, controller) -> None:
@@ -31,6 +33,7 @@ class HomeModel():
     def assign_default_values(self,  default_diff_value: int, default_max_threshold_value: int) -> None:
         self.diff_value = default_diff_value
         self.maximum_threshold = default_max_threshold_value * 100
+        self.support_threshold_var = self.maximum_threshold
         
     def get_mtg_exp_dict(self) -> dict:
         return self.mtg_exp_dict
@@ -58,19 +61,16 @@ class HomeModel():
     # probably going to be replaced by a service
     def set_diff_type(self, diff_type: int) -> None:
         self.diff_type = diff_type
-        print(f'printed from model, type is {self.diff_type}')
 
     # probably going to be replaced by a service
     def set_diff_value(self, diff_value: int) -> None:
         self.diff_value = diff_value
-        print(f'printed from model, value is {self.diff_value}')
 
     # probably going to be replaced by a service
     def set_maximum_threshold_value(self, maximum_threshold_value: int) -> None:
         # converting from eur to cents
         self.maximum_threshold = maximum_threshold_value * 100
         self.support_threshold_var = self.maximum_threshold
-        print(f'printed from model, threshold max value is {self.maximum_threshold}')
 
     # gets all the mtg expansions
     def get_expansions(self) -> None:
@@ -109,7 +109,6 @@ class HomeModel():
             try:
                 async with session.get(f'{GamesApi.GET_LISTING_BY_EXPANSION_ID.value}{exp_id}', headers=headers) as response:
                     response.raise_for_status()
-                    print(response.headers)
                     listings = await response.json() 
                     if self.stop_event.is_set():
                         return
@@ -205,21 +204,21 @@ class HomeModel():
             "quantity": 1,
             "via_cardtrader_zero": True,
             "billing_address": {
-                "name": "name surname",
-                "street": "via del bulo 00",
-                "zip": "50143",
-                "city": "firenze",
-                "state_or_province": "FI",
-                "country_code": "IT",
-                "phone": "123456789"
+                "name": self.config_service.config["Billing address name"],
+                "street": self.config_service.config["Billing Street"],
+                "zip": self.config_service.config["Billing zip"],
+                "city": self.config_service.config["Billing city"],
+                "state_or_province": self.config_service.config["Billing state or province"],
+                "country_code": self.config_service.config["Billing country code"],
+                "phone": self.config_service.config["Billing phone"]
             },
             "shipping_address": {
-                "name": "name surname",
-                "street": "via del bulo 00",
-                "zip": "50143",
-                "city": "firenze",
-                "state_or_province": "FI",
-                "country_code": "IT"
+                "name": self.config_service.config["Shipping name"],
+                "street": self.config_service.config["Shipping street"],
+                "zip": self.config_service.config["Shipping zip"],
+                "city": self.config_service.config["Shipping city"],
+                "state_or_province": self.config_service.config["Shipping state or province"],
+                "country_code": self.config_service.config["Shipping country code"]
             }
         }
 

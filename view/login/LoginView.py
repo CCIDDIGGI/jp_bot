@@ -14,9 +14,9 @@ class LoginView(CTkFrame):
         # main setup
         super().__init__(parent)
         self.place(relwidth = 1, relheight = 1)
-        self.auth_var = tkinter.StringVar()
+        self.auth_var = tkinter.StringVar(value=self.config_service.config["Auth token"])
         self.ckb_remember_var = tkinter.StringVar(value=self.config_service.config["Remember auth token"])
-
+        
         # widgets
         lbl = CTkLabel(self, 1, 1, 2, bg_color = "red", text = "Please enter your CardTrader personal Auth Token")
         self.auth_entry = CTkEntry(self, placeholder_text = "Auth Token...", textvariable=self.auth_var)
@@ -28,6 +28,7 @@ class LoginView(CTkFrame):
                                            command=lambda: webbrowser.open("https://www.cardtrader.com/docs/api/full/reference"))
         
         # widgets callback
+        self.check_auth_btn_state()
         self.auth_var.trace_add("write", self.check_auth_btn_state)
 
         # widgets rendering
@@ -47,6 +48,6 @@ class LoginView(CTkFrame):
         
     def navigate_to_home(self):
         self.config_service.set_auth_token(self.auth_var.get())
-        self.config_service.write_login_config(self.ckb_remember_var.get())
+        self.config_service.write_login_config(self.auth_var.get() ,self.ckb_remember_var.get())
         self.controller.navigate_to_home(self.parent)
         self.pack_forget()

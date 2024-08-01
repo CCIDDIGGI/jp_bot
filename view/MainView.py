@@ -12,7 +12,7 @@ class MainView(CTk):
         # main setup
         super().__init__()
         self.title("Jeff Pesos Money Printer")
-        self.geometry("1280x400")
+        self.geometry("1200x580")
         # self.minsize(1280, 800)
         self.resizable(True, True)
 

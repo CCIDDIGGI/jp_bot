@@ -1,66 +1,113 @@
+import tkinter
 from customtkinter import *
+from services.ConfigService import ConfigService
 
 class SidebarView(CTkFrame):
 
     # child of MainView -> parent argument is MainView
     def __init__(self, parent):
+        self.config_service = ConfigService()
 
         # main setup
         super().__init__(parent)
         self.place(relx = 0, rely = 0, relwidth = 0.25, relheight = 1)
+        self.entry_bill_name_var = tkinter.StringVar(value=self.config_service.config["Billing address name"])
+        self.entry_bill_street_var = tkinter.StringVar(value=self.config_service.config["Billing Street"])
+        self.entry_bill_zip_var = tkinter.StringVar(value=self.config_service.config["Billing zip"])
+        self.entry_bill_city_var = tkinter.StringVar(value=self.config_service.config["Billing city"])
+        self.entry_bill_state_or_province_var = tkinter.StringVar(value=self.config_service.config["Billing state or province"])
+        self.entry_bill_country_code_var = tkinter.StringVar(value=self.config_service.config["Billing country code"])
+        self.entry_bill_phone_var = tkinter.StringVar(value=self.config_service.config["Billing phone"])
+        self.entry_ship_name_var = tkinter.StringVar(value=self.config_service.config["Shipping name"])
+        self.entry_ship_street_var = tkinter.StringVar(value=self.config_service.config["Shipping street"])
+        self.entry_ship_zip_var = tkinter.StringVar(value=self.config_service.config["Shipping zip"])
+        self.entry_ship_city_var = tkinter.StringVar(value=self.config_service.config["Shipping city"])
+        self.entry_ship_state_or_province_var = tkinter.StringVar(value=self.config_service.config["Shipping state or province"])
+        self.entry_ship_country_code_var = tkinter.StringVar(value=self.config_service.config["Shipping country code"])
 
         # widgets
-        lbl_filters = CTkLabel(self, 50, 30, 2, text="Filters", bg_color="green")
-        lbl_conditions = CTkLabel(self, 50, 30, 2, text="Conditions", bg_color="red")
-        cbx_nm = CTkCheckBox(self, width=20, height=20, border_width=4, text="Near Mint")
-        cbx_sp = CTkCheckBox(self, width=20, height=20, border_width=4, text="Slightly Played")
-        cbx_mp = CTkCheckBox(self, width=20, height=20, border_width=4, text="Moderately Played")        
-        cbx_pd = CTkCheckBox(self, width=20, height=20, border_width=4, text="Played")        
-        cbx_pr = CTkCheckBox(self, width=20, height=20, border_width=4, text="Poor")
+        lbl_billing_info = CTkLabel(self, bg_color="red",text="Billing address informations")
+        lbl_bill_name = CTkLabel(self, text="Name:")
+        self.entry_bill_name = CTkEntry(self, width=150, textvariable=self.entry_bill_name_var)    
+        lbl_bill_street = CTkLabel(self, text="Street:")
+        self.entry_bill_street = CTkEntry(self, width=150, textvariable=self.entry_bill_street_var)    
+        lbl_bill_zip = CTkLabel(self, text="Zip code:")
+        self.entry_bill_zip = CTkEntry(self, width=150, textvariable=self.entry_bill_zip_var)    
+        lbl_bill_city = CTkLabel(self, text="City:")
+        self.entry_bill_city = CTkEntry(self, width=150, textvariable=self.entry_bill_city_var)    
+        lbl_bill_state_or_province = CTkLabel(self, text="State or province:")
+        self.entry_bill_state_or_province = CTkEntry(self, width=150, textvariable=self.entry_bill_state_or_province_var)    
+        lbl_bill_country_code = CTkLabel(self, text="Country code:")
+        self.entry_bill_country_code = CTkEntry(self, width=150, textvariable=self.entry_bill_country_code_var)    
+        lbl_bill_phone = CTkLabel(self, text="Phone:")
+        self.entry_bill_phone = CTkEntry(self, width=150, textvariable=self.entry_bill_phone_var)    
 
-        lbl_language = CTkLabel(self, 50, 30, 2, text="Language", bg_color="blue")
-        cbx_en = CTkCheckBox(self, width=20, height=20, border_width=4, text="EN")
-        cbx_fr = CTkCheckBox(self, width=20, height=20, border_width=4, text="FR")
-        cbx_de = CTkCheckBox(self, width=20, height=20, border_width=4, text="DE")
-        cbx_it = CTkCheckBox(self, width=20, height=20, border_width=4, text="IT")
-        cbx_pt = CTkCheckBox(self, width=20, height=20, border_width=4, text="PT")
-        cbx_es = CTkCheckBox(self, width=20, height=20, border_width=4, text="ES")
+        lbl_shipping_info = CTkLabel(self, bg_color="red",text="Shipping address informations")
+        lbl_ship_name = CTkLabel(self, text="Name:")
+        self.entry_ship_name = CTkEntry(self, width=150, textvariable=self.entry_ship_name_var)    
+        lbl_ship_street = CTkLabel(self, text="Street:")
+        self.entry_ship_street = CTkEntry(self, width=150, textvariable=self.entry_ship_street_var)    
+        lbl_ship_zip = CTkLabel(self, text="Zip code:")
+        self.entry_ship_zip = CTkEntry(self, width=150, textvariable=self.entry_ship_zip_var)    
+        lbl_ship_city = CTkLabel(self, text="City:")
+        self.entry_ship_city = CTkEntry(self, width=150, textvariable=self.entry_ship_city_var)    
+        lbl_ship_state_or_province = CTkLabel(self, text="State or province:")
+        self.entry_ship_state_or_province = CTkEntry(self, width=150, textvariable=self.entry_ship_state_or_province_var)    
+        lbl_ship_country_code = CTkLabel(self, text="Country code:")
+        self.entry_ship_country_code = CTkEntry(self, width=150, textvariable=self.entry_ship_country_code_var) 
 
-        lbl_extra = CTkLabel(self, 50, 30, 2, text="Extra", bg_color="yellow")      
-        cbx_rev = CTkCheckBox(self, width=20, height=20, border_width=4, text="Reverse")
-        cbx_sgd = CTkCheckBox(self, width=20, height=20, border_width=4, text="Signed")
-        cbx_alt = CTkCheckBox(self, width=20, height=20, border_width=4, text="Altered/Misprint")
-        cbx_grd = CTkCheckBox(self, width=20, height=20, border_width=4, text="Graded")
-        cbx_ctz = CTkCheckBox(self, width=20, height=20, border_width=4, text="CT Zero")
-        cbx_odr = CTkCheckBox(self, width=20, height=20, border_width=4, text="One Day Ready")  
-        cbx_sctry = CTkCheckBox(self, width=20, height=20, border_width=4, text="Same Country")
-        cbx_sctnt = CTkCheckBox(self, width=20, height=20, border_width=4, text="Same Continent")      
+        self.btn_save = CTkButton(self, text="Save settings", command=self.save_settings)
 
         # widgets rendering
-        lbl_filters.pack()
-        lbl_conditions.pack()
-        cbx_nm.pack()
-        cbx_sp.pack()    
-        cbx_mp.pack()
-        cbx_pd.pack()
-        cbx_pr.pack()
-        lbl_language.pack()
-        cbx_en.pack()
-        cbx_fr.pack()    
-        cbx_de.pack()
-        cbx_it.pack()
-        cbx_pt.pack()  
-        cbx_es.pack()           
-        lbl_extra.pack()
-        cbx_rev.pack()
-        cbx_sgd.pack()    
-        cbx_alt.pack()
-        cbx_grd.pack()
-        cbx_ctz.pack()
-        cbx_odr.pack()
-        cbx_sctry.pack()    
-        cbx_sctnt.pack()      
+        lbl_billing_info.place(x=20, y=20)
+        lbl_bill_name.place(x=20, y=50)
+        self.entry_bill_name.place(x=80, y=50)
+        lbl_bill_street.place(x=20, y=80)
+        self.entry_bill_street.place(x=80, y=80)
+        lbl_bill_zip.place(x=20, y=110)
+        self.entry_bill_zip.place(x=80, y=110)
+        lbl_bill_city.place(x=20, y=140)
+        self.entry_bill_city.place(x=80, y=140)
+        lbl_bill_state_or_province.place(x=20, y=170)
+        self.entry_bill_state_or_province.place(x=130, y=170)
+        lbl_bill_country_code.place(x=20, y=200)
+        self.entry_bill_country_code.place(x=130, y=200)
+        lbl_bill_phone.place(x=20, y=230)
+        self.entry_bill_phone.place(x=80, y=230)
+        lbl_shipping_info.place(x=20, y=260)
+        lbl_ship_name.place(x=20, y=290)
+        self.entry_ship_name.place(x=80, y=290)
+        lbl_ship_street.place(x=20, y=320)
+        self.entry_ship_street.place(x=80, y=320)
+        lbl_ship_zip.place(x=20, y=350)
+        self.entry_ship_zip.place(x=80, y=350)
+        lbl_ship_city.place(x=20, y=380)
+        self.entry_ship_city.place(x=80, y=380)
+        lbl_ship_state_or_province.place(x=20, y=410)
+        self.entry_ship_state_or_province.place(x=130, y=410)
+        lbl_ship_country_code.place(x=20, y=440)
+        self.entry_ship_country_code.place(x=130, y=440)
+        self.btn_save.place(x=20, y=500)
+      
     
     # setting controller (SidebarController)        
     def set_controller(self, controller) -> None:
         self.controller = controller
+
+    def save_settings(self) -> None:
+        settings = {        
+            "Billing address name": self.entry_bill_name_var.get(),
+            "Billing Street": self.entry_bill_street_var.get(),
+            "Billing zip": self.entry_bill_zip_var.get(),
+            "Billing city": self.entry_bill_city_var.get(),
+            "Billing state or province": self.entry_bill_state_or_province_var.get(),
+            "Billing country code": self.entry_bill_country_code_var.get(),
+            "Billing phone": self.entry_bill_phone_var.get(),
+            "Shipping name": self.entry_ship_name_var.get(),
+            "Shipping street": self.entry_ship_street_var.get(),
+            "Shipping zip": self.entry_ship_zip_var.get(),
+            "Shipping city": self.entry_ship_city_var.get(),
+            "Shipping state or province": self.entry_ship_state_or_province_var.get(),
+            "Shipping country code": self.entry_ship_country_code_var.get()
+        }
+        self.config_service.write_address_config(settings)

@@ -34,44 +34,51 @@ class ConfigService():
         # if folder does not exist
         if not os.path.exists(self.cfg_file_dir):
             os.makedirs(self.cfg_file_dir)
-            # this snippet needs to be reusable, do a function
-            # with open(self.cfg_file_path, 'w') as file:
-            #     file.write("-----Jeff Pesos Bot Configuration File-----\n\n")    
-            for key in self.default_config:
-                with open(self.cfg_file_path, 'a') as file:
-                    file.write(f"{key}: {self.default_config[key]}\n")    
+            self.write_to_file(self.default_config)
             return True  
         # if folder exists but not the config file
         if not os.path.exists(self.cfg_file_path):                       
-            # with open(self.cfg_file_path, 'w') as file:
-            #     file.write("-----Jeff Pesos Bot Configuration File-----\n\n")    
-            for key in self.default_config:
-                with open(self.cfg_file_path, 'a') as file:
-                    file.write(f"{key}: {self.default_config[key]}\n") 
+            self.write_to_file(self.default_config) 
             return True
         return False
+    
+    def set_auth_token(self, token: str) -> None:
+        self.auth_token = token
+
+    def get_auth_token(self) -> str:
+        return self.auth_token
 
     def init_cfg_dict(self) -> None:
         with open(self.cfg_file_path, 'r') as file:
             lines = file.readlines()
-            for line in lines:
+            for line in lines[2:]:
                 key, value = line.split(":", 1)
                 self.config[key] = value.strip()            
-
-    def set_auth_token(self, token: str) -> None:
-        self.auth_token = token
-        print(f"auth token is {self.auth_token}")
-
-    def get_auth_token(self) -> str:
-        return self.auth_token
     
-    def write_login_config(self, remember: str) -> None:
+    def write_login_config(self, token: str, remember: str) -> None:
         # cancel current config content
         with open(self.cfg_file_path, 'w') as file:
             pass
         self.config["Remember auth token"] = remember
-        for key in self.config:
+        if remember == 'on':
+            self.config["Auth token"] = token
+        else:
+            self.config["Auth token"] = ""            
+        self.write_to_file(self.config)   
+    
+    def write_address_config(self, settings: dict) -> None:
+        # cancel current config content
+        with open(self.cfg_file_path, 'w') as file:
+            pass
+        for key in settings:
+            self.config[key] = settings[key]         
+        self.write_to_file(self.config)  
+
+    def write_to_file(self, dict: dict) -> None:
+        with open(self.cfg_file_path, 'w') as file:
+            file.write("-----Jeff Pesos Bot Configuration File-----\n\n")    
+        for key in dict:
             with open(self.cfg_file_path, 'a') as file:
-                file.write(f"{key}: {self.config[key]}\n")     
+                file.write(f"{key}: {dict[key]}\n")         
             
 
