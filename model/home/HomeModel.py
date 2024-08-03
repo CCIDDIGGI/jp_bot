@@ -195,8 +195,9 @@ class HomeModel():
 
 
     async def add_item_to_cart(self, id: int) -> None:
+        print(self.config_service.config)
         headers = {
-            'Authorization': f'Bearer {BearerToken.TOKEN.value}'
+            'Authorization': f'Bearer {self.config_service.config["Auth token"]}'
         }
 
         payload = {
