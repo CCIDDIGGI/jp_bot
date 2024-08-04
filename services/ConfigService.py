@@ -1,9 +1,13 @@
 import os
+from typing import Self
 
 class ConfigService():
+    _instance = None
+    
     cfg_file_dir = 'C:\\jp_bot_config'
     cfg_file_name = 'jp_bot_config.txt'
     cfg_file_path = os.path.join(cfg_file_dir, cfg_file_name)
+    auth_token = ""
     default_config = {
         "Auth token": "",
         "Remember auth token": "off",
@@ -23,6 +27,11 @@ class ConfigService():
     }
 
     config = {}
+    
+    def __new__(cls, *args, **kwargs) -> Self:
+        if cls._instance is None:
+            cls._instance = super(ConfigService, cls).__new__(cls, *args, **kwargs)
+        return cls._instance
 
     def __init__(self) -> None:
         if not self.init_cfg_dir_and_file():

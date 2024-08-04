@@ -41,7 +41,6 @@ class HomeModel():
     def set_mtg_exp_dict(self, value) -> None:
         if not value:
             raise ValueError("The MTG expansions dictionary list cannot be empty!")
-        
         self.mtg_exp_dict = value
 
     def get_mtg_exp_list(self) -> list:
@@ -50,7 +49,6 @@ class HomeModel():
     def set_mtg_exp_list(self, value) -> None:
         if not value:
             raise ValueError("The MTG expansions list cannot be empty!")
-        
         self.mtg_exp_list = value
     
     def set_listings_exp_id(self, value: int) -> None:
@@ -74,13 +72,15 @@ class HomeModel():
 
     # gets all the mtg expansions
     def get_expansions(self) -> None:
-                
         headers = {
-            'Authorization': f'Bearer {BearerToken.TOKEN.value}'
+            'Authorization': f'Bearer {self.config_service.get_auth_token()}'
         }
         
         # exp_dict is now list of dictionaries
-        exp_dict = requests.get(f'{GamesApi.GET_ALL_EXPANSIONS.value}', headers=headers).json()
+        try:
+            exp_dict = requests.get(f'{GamesApi.GET_ALL_EXPANSIONS.value}', headers=headers).json()
+        except Exception as e:
+            print(f"An error occurred while getting all expansions, error is: {e}")
         self.set_mtg_exp_dict(exp_dict)
 
         exp_list = []
@@ -99,7 +99,7 @@ class HomeModel():
     
     async def get_listings_by_exp_id(self, exp_id, process_callback) -> None:
         headers = {
-            'Authorization': f'Bearer {BearerToken.TOKEN.value}',
+            'Authorization': f'Bearer {self.config_service.get_auth_token()}',
             'Cache-Control': 'no-cache, no-store, must-revalidate',
             'Pragma': 'no-cache',
             'Expires': '0'
@@ -192,29 +192,45 @@ class HomeModel():
 
     async def add_item_to_cart(self, id: int) -> None:
         headers = {
-            'Authorization': f'Bearer {self.config_service.config["Auth token"]}'
+            'Authorization': f'Bearer {self.config_service.get_auth_token()}'
         }
-
+    
         payload = {
             "product_id": id,
             "quantity": 1,
             "via_cardtrader_zero": True,
+            # "billing_address": {
+            #     "name": self.config_service.config["Billing address name"],
+            #     "street": self.config_service.config["Billing Street"],
+            #     "zip": self.config_service.config["Billing zip"],
+            #     "city": self.config_service.config["Billing city"],
+            #     "state_or_province": self.config_service.config["Billing state or province"],
+            #     "country_code": self.config_service.config["Billing country code"],
+            #     "phone": self.config_service.config["Billing phone"]
+            # },
+            # "shipping_address": {
+            #     "name": self.config_service.config["Shipping name"],
+            #     "street": self.config_service.config["Shipping street"],
+            #     "zip": self.config_service.config["Shipping zip"],
+            #     "city": self.config_service.config["Shipping city"],
+            #     "state_or_province": self.config_service.config["Shipping state or province"],
+            #     "country_code": self.config_service.config["Shipping country code"]
+            # }
             "billing_address": {
-                "name": self.config_service.config["Billing address name"],
-                "street": self.config_service.config["Billing Street"],
-                "zip": self.config_service.config["Billing zip"],
-                "city": self.config_service.config["Billing city"],
-                "state_or_province": self.config_service.config["Billing state or province"],
-                "country_code": self.config_service.config["Billing country code"],
-                "phone": self.config_service.config["Billing phone"]
+                "name": "name",
+                "street": "street",
+                "zip": "50143", 
+                "city": "firenze",
+                "state_or_province": "FI",
+                "country_code": "IT"
             },
             "shipping_address": {
-                "name": self.config_service.config["Shipping name"],
-                "street": self.config_service.config["Shipping street"],
-                "zip": self.config_service.config["Shipping zip"],
-                "city": self.config_service.config["Shipping city"],
-                "state_or_province": self.config_service.config["Shipping state or province"],
-                "country_code": self.config_service.config["Shipping country code"]
+                "name": "name",
+                "street": "street",
+                "zip": "50143",
+                "city": "firenze",
+                "state_or_province": "FI",
+                "country_code": "IT"
             }
         }
 
@@ -235,7 +251,6 @@ class HomeModel():
         if self.fetch_thread and self.fetch_thread.is_alive():
             self.fetch_thread.join()
         self.support_threshold_var = self.maximum_threshold
-
        
     def run_async_task(self, coro):
         loop = asyncio.new_event_loop()
