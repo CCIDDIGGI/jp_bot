@@ -19,6 +19,9 @@ class HomeModel():
     maximum_threshold = 0
     support_threshold_var = 0
     exp_id = 0
+    
+    billing_address = {}
+    shipping_address = {}
 
     stop_event = Event()
     fetch_thread = None
@@ -26,6 +29,7 @@ class HomeModel():
     def __init__(self) -> None:
         self.config_service = ConfigService()
         self.get_expansions()
+        self.init_addresses()
 
     def set_controller(self, controller) -> None:
         self.controller = controller
@@ -94,15 +98,30 @@ class HomeModel():
         for x in range(len(self.mtg_exp_dict) -1):
             if self.mtg_exp_dict[x]["name"] == exp_name:
                 return self.set_listings_exp_id(self.mtg_exp_dict[x]["id"])
-
+            
+    def init_addresses(self) -> None:
+        self.billing_address = { 
+            "name": self.config_service.config["Billing address name"],
+            "street": self.config_service.config["Billing Street"],
+            "zip": self.config_service.config["Billing zip"],
+            "city": self.config_service.config["Billing city"],
+            "state_or_province": self.config_service.config["Billing state or province"],
+            "country_code": self.config_service.config["Billing country code"],
+            "phone": self.config_service.config["Billing phone"]
+        },
+        self.shipping_address = {
+            "name": self.config_service.config["Shipping name"],
+            "street": self.config_service.config["Shipping street"],
+            "zip": self.config_service.config["Shipping zip"],
+            "city": self.config_service.config["Shipping city"],
+            "state_or_province": self.config_service.config["Shipping state or province"],
+            "country_code": self.config_service.config["Shipping country code"]
+        }
                 
     
     async def get_listings_by_exp_id(self, exp_id, process_callback) -> None:
         headers = {
             'Authorization': f'Bearer {self.config_service.get_auth_token()}',
-            'Cache-Control': 'no-cache, no-store, must-revalidate',
-            'Pragma': 'no-cache',
-            'Expires': '0'
         }
         
         async with aiohttp.ClientSession() as session:
@@ -199,43 +218,12 @@ class HomeModel():
             "product_id": id,
             "quantity": 1,
             "via_cardtrader_zero": True,
-            # "billing_address": {
-            #     "name": self.config_service.config["Billing address name"],
-            #     "street": self.config_service.config["Billing Street"],
-            #     "zip": self.config_service.config["Billing zip"],
-            #     "city": self.config_service.config["Billing city"],
-            #     "state_or_province": self.config_service.config["Billing state or province"],
-            #     "country_code": self.config_service.config["Billing country code"],
-            #     "phone": self.config_service.config["Billing phone"]
-            # },
-            # "shipping_address": {
-            #     "name": self.config_service.config["Shipping name"],
-            #     "street": self.config_service.config["Shipping street"],
-            #     "zip": self.config_service.config["Shipping zip"],
-            #     "city": self.config_service.config["Shipping city"],
-            #     "state_or_province": self.config_service.config["Shipping state or province"],
-            #     "country_code": self.config_service.config["Shipping country code"]
-            # }
-            "billing_address": {
-                "name": "name",
-                "street": "street",
-                "zip": "50143", 
-                "city": "firenze",
-                "state_or_province": "FI",
-                "country_code": "IT"
-            },
-            "shipping_address": {
-                "name": "name",
-                "street": "street",
-                "zip": "50143",
-                "city": "firenze",
-                "state_or_province": "FI",
-                "country_code": "IT"
-            }
+            # "billing_address": self.billing_address,
+            # "shipping_address": self.shipping_address
         }
 
         response = requests.post(CartApi.ADD_PRODUCT_TO_CART.value, json=payload, headers=headers)
-
+        
         if response.status_code == 200:
             self.controller.send_info_to_view("Item succesfully added to cart!")
         else:
@@ -247,10 +235,10 @@ class HomeModel():
         self.fetch_thread.start()
 
     def stop_fetch(self) -> None:
+        self.support_threshold_var = self.maximum_threshold
         self.stop_event.set()
         if self.fetch_thread and self.fetch_thread.is_alive():
             self.fetch_thread.join()
-        self.support_threshold_var = self.maximum_threshold
        
     def run_async_task(self, coro):
         loop = asyncio.new_event_loop()
