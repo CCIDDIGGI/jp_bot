@@ -29,7 +29,7 @@ class HomeModel():
     def __init__(self) -> None:
         self.config_service = ConfigService()
         self.get_expansions()
-        self.init_addresses()
+        # self.init_addresses()
 
     def set_controller(self, controller) -> None:
         self.controller = controller
@@ -99,24 +99,25 @@ class HomeModel():
             if self.mtg_exp_dict[x]["name"] == exp_name:
                 return self.set_listings_exp_id(self.mtg_exp_dict[x]["id"])
             
-    def init_addresses(self) -> None:
-        self.billing_address = { 
-            "name": self.config_service.config["Billing address name"],
-            "street": self.config_service.config["Billing Street"],
-            "zip": self.config_service.config["Billing zip"],
-            "city": self.config_service.config["Billing city"],
-            "state_or_province": self.config_service.config["Billing state or province"],
-            "country_code": self.config_service.config["Billing country code"],
-            "phone": self.config_service.config["Billing phone"]
-        },
-        self.shipping_address = {
-            "name": self.config_service.config["Shipping name"],
-            "street": self.config_service.config["Shipping street"],
-            "zip": self.config_service.config["Shipping zip"],
-            "city": self.config_service.config["Shipping city"],
-            "state_or_province": self.config_service.config["Shipping state or province"],
-            "country_code": self.config_service.config["Shipping country code"]
-        }
+            
+    # def init_addresses(self) -> None:
+    #     self.billing_address = { 
+    #         "name": self.config_service.config["Billing address name"],
+    #         "street": self.config_service.config["Billing Street"],
+    #         "zip": self.config_service.config["Billing zip"],
+    #         "city": self.config_service.config["Billing city"],
+    #         "state_or_province": self.config_service.config["Billing state or province"],
+    #         "country_code": self.config_service.config["Billing country code"],
+    #         "phone": self.config_service.config["Billing phone"]
+    #     },
+    #     self.shipping_address = {
+    #         "name": self.config_service.config["Shipping name"],
+    #         "street": self.config_service.config["Shipping street"],
+    #         "zip": self.config_service.config["Shipping zip"],
+    #         "city": self.config_service.config["Shipping city"],
+    #         "state_or_province": self.config_service.config["Shipping state or province"],
+    #         "country_code": self.config_service.config["Shipping country code"]
+    #     }
                 
     
     async def get_listings_by_exp_id(self, exp_id, process_callback) -> None:
