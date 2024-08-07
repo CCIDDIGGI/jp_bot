@@ -1,4 +1,4 @@
-Jp bot alpha version >>> 1.0.0
+Jp bot alpha version >>> 1.0.1
 
 F.A.Q. 
 

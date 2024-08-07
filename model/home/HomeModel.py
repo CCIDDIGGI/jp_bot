@@ -100,24 +100,24 @@ class HomeModel():
                 return self.set_listings_exp_id(self.mtg_exp_dict[x]["id"])
             
             
-    # def init_addresses(self) -> None:
-    #     self.billing_address = { 
-    #         "name": self.config_service.config["Billing address name"],
-    #         "street": self.config_service.config["Billing Street"],
-    #         "zip": self.config_service.config["Billing zip"],
-    #         "city": self.config_service.config["Billing city"],
-    #         "state_or_province": self.config_service.config["Billing state or province"],
-    #         "country_code": self.config_service.config["Billing country code"],
-    #         "phone": self.config_service.config["Billing phone"]
-    #     },
-    #     self.shipping_address = {
-    #         "name": self.config_service.config["Shipping name"],
-    #         "street": self.config_service.config["Shipping street"],
-    #         "zip": self.config_service.config["Shipping zip"],
-    #         "city": self.config_service.config["Shipping city"],
-    #         "state_or_province": self.config_service.config["Shipping state or province"],
-    #         "country_code": self.config_service.config["Shipping country code"]
-    #     }
+    def init_addresses(self) -> None:
+        self.billing_address = { 
+            "name": self.config_service.config["Billing address name"],
+            "street": self.config_service.config["Billing Street"],
+            "zip": self.config_service.config["Billing zip"],
+            "city": self.config_service.config["Billing city"],
+            "state_or_province": self.config_service.config["Billing state or province"],
+            "country_code": self.config_service.config["Billing country code"],
+            "phone": self.config_service.config["Billing phone"]
+        },
+        self.shipping_address = {
+            "name": self.config_service.config["Shipping name"],
+            "street": self.config_service.config["Shipping street"],
+            "zip": self.config_service.config["Shipping zip"],
+            "city": self.config_service.config["Shipping city"],
+            "state_or_province": self.config_service.config["Shipping state or province"],
+            "country_code": self.config_service.config["Shipping country code"]
+        }
                 
     
     async def get_listings_by_exp_id(self, exp_id, process_callback) -> None:
@@ -176,7 +176,7 @@ class HomeModel():
                             if self.diff_type == 1:
                                 if (item["price_cents"] - ((self.diff_value / 100) * item["price_cents"])) > items_to_compare[0]["price_cents"]:
                                     # add item to cart
-                                    self.controller.send_info_to_view(f"{items_to_compare[0]["name_en"]}, listed for: {items_to_compare[0]["price_cents"]} by: {items_to_compare[0]['user']["username"]} is at least {self.diff_value} % cheaper then {item["price_cents"]}  by: {item['user']["username"]} , adding it to cart...")
+                                    self.controller.send_info_to_view(f"{items_to_compare[0]['name_en']}, listed for: {items_to_compare[0]['price_cents']} by: {items_to_compare[0]['user']['username']} is at least {self.diff_value} % cheaper then {item['price_cents']}  by: {item['user']['username']} , adding it to cart...")
                                     await self.add_item_to_cart(items_to_compare[0]["id"])
                                     
                                     # check if maximum threshold is set
@@ -193,7 +193,7 @@ class HomeModel():
                             if self.diff_type == 2:
                                 if items_to_compare[0]["price_cents"] < (item["price_cents"] - (self.diff_value * 100)):
                                     # add item to cart
-                                    self.controller.send_info_to_view(f"{items_to_compare[0]["name_en"]}, listed for: {items_to_compare[0]["price_cents"]} by: {items_to_compare[0]['user']["username"]} is at least {self.diff_value}€ cheaper then {item["price_cents"]}  by: {item['user']["username"]} , adding it to cart...")
+                                    self.controller.send_info_to_view(f"{items_to_compare[0]['name_en']}, listed for: {items_to_compare[0]['price_cents']} by: {items_to_compare[0]['user']['username']} is at least {self.diff_value}€ cheaper then {item['price_cents']}  by: {item['user']['username']} , adding it to cart...")
                                     await self.add_item_to_cart(items_to_compare[0]["id"])
                                     
                                     # check if maximum threshold is set
@@ -219,8 +219,8 @@ class HomeModel():
             "product_id": id,
             "quantity": 1,
             "via_cardtrader_zero": True,
-            # "billing_address": self.billing_address,
-            # "shipping_address": self.shipping_address
+            "billing_address": self.billing_address,
+            "shipping_address": self.shipping_address
         }
 
         response = requests.post(CartApi.ADD_PRODUCT_TO_CART.value, json=payload, headers=headers)

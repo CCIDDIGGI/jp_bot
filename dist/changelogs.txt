@@ -1,0 +1,1 @@
+07/08/2024 [Alpha] - added shipping and billing address, short term fix for the "adding to cart" problem, released in v1.0.1 
