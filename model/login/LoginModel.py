@@ -1,20 +1,24 @@
-
-from controller.home.HomeController import HomeController
-from controller.shared.sidebar.SidebarController import SidebarController
+from shared.header.model import HeaderModel
 from model.home.HomeModel import HomeModel
-from model.shared.sidebar.SidebarModel import SidebarModel
+from shared.sidebar.model.SidebarModel import SidebarModel
 from view.home.HomeView import HomeView
-from view.shared.sidebar.SidebarView import SidebarView
-
+from shared.sidebar.view.SidebarView import SidebarView
+from shared.header.view import HeaderView
+from controller.home.HomeController import HomeController
+from shared.header.controller import HeaderController
+from shared.sidebar.controller.SidebarController import SidebarController
 
 class LoginModel():
 
     def navigate_to_home(self, parent) -> None:
-        # removed sidebar for alpha version because shipping address is not required
-        # sidebar_model = SidebarModel()
-        # sidebar_view = SidebarView(parent)
-        # SidebarController(sidebar_model, sidebar_view)
+        sidebar_model = SidebarModel()
+        sidebar_view = SidebarView(parent)
+        SidebarController(sidebar_model, sidebar_view)
         
         home_view = HomeView(parent)
         home_model = HomeModel()
         HomeController(home_model, home_view)
+
+        header_view = HeaderView(parent)
+        header_model = HeaderModel()
+        HeaderController(header_model, header_view)

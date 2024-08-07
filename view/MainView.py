@@ -11,10 +11,10 @@ class MainView(CTk):
 
         # main setup
         super().__init__()
-        self.title("Jeff Pesos Money Printer")
+        self.title("Jeff Pesos Card Bot Alpha ver 1.0.1")
         self.geometry("1280x720")
-        # self.minsize(1280, 800)
-        self.resizable(True, True)
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_rowconfigure(0, weight=1)
 
         # widgets
         login_view = LoginView(self)
