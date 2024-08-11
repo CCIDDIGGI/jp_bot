@@ -3,7 +3,7 @@ import aiohttp
 import asyncio
 import requests
 from threading import Event, Thread
-from enums.api.ApiEnum import BearerToken, CartApi, GamesApi
+from enums.api.ApiEnum import CartApi, GamesApi
 from enums.games.mtg.mtgEnum import MtgGenerics
 from services.ConfigService import ConfigService
 

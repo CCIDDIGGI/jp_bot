@@ -9,7 +9,7 @@ class HomeView(CTkFrame):
     def __init__(self, parent):
         # main setup
         super().__init__(parent)
-        self.place(relx = 0, rely = 0, relwidth = 1, relheight = 1)
+        self.grid(row=1, column=1, sticky="nsew")
         self.radio_diff_var = tkinter.IntVar(value=1)
         self.entry_diff_var = tkinter.StringVar(value='10')
         self.entry_maximum_threshold_var = tkinter.StringVar(value='50')

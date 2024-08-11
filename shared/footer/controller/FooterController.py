@@ -1,5 +1,5 @@
 
-class HeaderController():
+class FooterController():
 
     def __init__(self, model, view) -> None:
         self.model = model

@@ -10,7 +10,7 @@ class SidebarView(CTkFrame):
 
         # main setup
         super().__init__(parent)
-        self.place(relx = 0, rely = 0, relwidth = 0.25, relheight = 1)
+        self.grid(row=1, column=0, sticky="nsew")
         self.entry_bill_name_var = tkinter.StringVar(value=self.config_service.config["Billing address name"])
         self.entry_bill_street_var = tkinter.StringVar(value=self.config_service.config["Billing Street"])
         self.entry_bill_zip_var = tkinter.StringVar(value=self.config_service.config["Billing zip"])

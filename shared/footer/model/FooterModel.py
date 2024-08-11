@@ -1,5 +1,5 @@
 
-class HeaderModel(): 
+class FooterModel(): 
     
     def __init__(self) -> None:
         pass

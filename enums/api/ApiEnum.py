@@ -1,7 +1,7 @@
 from enum import Enum
 
-class BearerToken(Enum):
-    TOKEN = "eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJjYXJkdHJhZGVyLXByb2R1Y3Rpb24iLCJzdWIiOiJhcHA6OTc5MyIsImF1ZCI6ImFwcDo5NzkzIiwiZXhwIjo0ODcyMzA2MzQyLCJqdGkiOiI4NDk2Zjg5NS02NjIxLTQ5MjYtYjI1Yi03ZjU4M2VmZWFlNGUiLCJpYXQiOjE3MTY2MzI3NDIsIm5hbWUiOiJUaW5hcmkgQXBwIDIwMjQwNDAzMjIxNTUwIn0.uhmNYPsThK4xuV2l7SVCyFd4QRpJ-DkiSc2uPQjkfAyb8JuCJjJh2NXuGudbimkb_lCYPwJzpFL01ZCDnCTy71LwHHT4Y3CKGVpVdX3jGo-2Oym_kwTBJGrD8GegHgXxhcuYFPsPQptnu9oUTkeByLw5XGdTIGiVvwm4mCGbvtn-WKnefj81YFP9UOOuishcSw2X5sS79eID_bKKsKZH1J73e4pT4NeUon5piJsTt9elcrookzJXbXNRIgNobmuf9Yx5-LFQHgTM3mVXp9acrclGkmmvS3rGWtXkocM4vCcbU8_RGN_20t8MCqhFKplMeXAW6raik_c1b5NTnusH5Q"
+class InfoApi(Enum):
+    GET_INFO = "https://api.cardtrader.com/api/v2/info"
 
 class GamesApi(Enum):
     GET_ALL_GAMES = "https://api.cardtrader.com/api/v2/games"

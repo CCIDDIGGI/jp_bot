@@ -2,6 +2,7 @@ import tkinter
 import webbrowser
 from customtkinter import *
 from enums.api.ApiEnum import *
+from services.HeaderService import HeaderService
 from services.ConfigService import ConfigService
 
 class LoginView(CTkFrame):  
@@ -10,10 +11,11 @@ class LoginView(CTkFrame):
     def __init__(self, parent):
         self.parent = parent
         self.config_service = ConfigService()
+        self.header_service = HeaderService()
 
         # main setup
         super().__init__(parent)
-        self.place(relwidth = 1, relheight = 1)
+        self.grid(row=0, column=0, rowspan=3, columnspan=2, sticky="nsew")
         self.auth_var = tkinter.StringVar(value=self.config_service.config["Auth token"])
         self.ckb_remember_var = tkinter.StringVar(value=self.config_service.config["Remember auth token"])
         
@@ -49,5 +51,6 @@ class LoginView(CTkFrame):
     def navigate_to_home(self):
         self.config_service.set_auth_token(self.auth_var.get())
         self.config_service.write_login_config(self.auth_var.get() ,self.ckb_remember_var.get())
+        self.header_service.fetch_username()
         self.controller.navigate_to_home(self.parent)
-        self.pack_forget()
+        self.grid_forget()
