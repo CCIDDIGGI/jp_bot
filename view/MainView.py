@@ -2,6 +2,7 @@ from customtkinter import *
 from controller.login.LoginController import LoginController
 from model.login.LoginModel import LoginModel
 from view.login.LoginView import LoginView
+from shared.modals.loading_screen.LoadingScreenService import LoadingScreenService
 
 class MainView(CTk):
     # this should be populated with data from
@@ -19,9 +20,10 @@ class MainView(CTk):
         self.grid_rowconfigure(1, weight=10, uniform='a')
 
         # widgets
-        login_view = LoginView(self)
-        login_model = LoginModel()
-        LoginController(login_model, login_view)
+        self.loading_screen_service = LoadingScreenService(self)
+        # login_view = LoginView(self)
+        # login_model = LoginModel()
+        # LoginController(login_model, login_view)
 
         # run
         self.mainloop()

@@ -54,3 +54,4 @@ class LoginView(CTkFrame):
         self.header_service.fetch_username()
         self.controller.navigate_to_home(self.parent)
         self.grid_forget()
+    
