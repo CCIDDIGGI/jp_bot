@@ -1,3 +1,4 @@
+import time
 from customtkinter import *
 from controller.login.LoginController import LoginController
 from model.login.LoginModel import LoginModel
@@ -20,11 +21,10 @@ class MainView(CTk):
         self.grid_rowconfigure(1, weight=10, uniform='a')
 
         # widgets
-        self.loading_screen_service = LoadingScreenService(self)
-        # login_view = LoginView(self)
-        # login_model = LoginModel()
-        # LoginController(login_model, login_view)
-
+        login_view = LoginView(self)
+        login_model = LoginModel()
+        LoginController(login_model, login_view)
+        
         # run
         self.mainloop()
 

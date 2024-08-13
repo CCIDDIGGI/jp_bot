@@ -6,6 +6,7 @@ from threading import Event, Thread
 from enums.api.ApiEnum import CartApi, GamesApi
 from enums.games.mtg.mtgEnum import MtgGenerics
 from services.ConfigService import ConfigService
+from shared.modals.loading_screen.LoadingScreenService import LoadingScreenService
 
 class HomeModel():
     mtg_exp_dict = list
@@ -30,6 +31,9 @@ class HomeModel():
         self.config_service = ConfigService()
         self.get_expansions()
         # self.init_addresses()
+        
+    def initialize_services(self, parent) -> None:
+        self.loading_screen_service = LoadingScreenService(parent)
 
     def set_controller(self, controller) -> None:
         self.controller = controller

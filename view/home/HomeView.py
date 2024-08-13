@@ -7,6 +7,8 @@ class HomeView(CTkFrame):
     maximum_threshold_value = 0
     # child of MainView -> parent argument is MainView
     def __init__(self, parent):
+        self.parent = parent
+        
         # main setup
         super().__init__(parent)
         self.grid(row=1, column=1, sticky="nsew")

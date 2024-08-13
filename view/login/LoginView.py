@@ -1,9 +1,12 @@
+import threading
+import time
 import tkinter
 import webbrowser
 from customtkinter import *
 from enums.api.ApiEnum import *
 from services.HeaderService import HeaderService
 from services.ConfigService import ConfigService
+from shared.modals.loading_screen.LoadingScreenService import LoadingScreenService
 
 class LoginView(CTkFrame):  
 
@@ -12,6 +15,7 @@ class LoginView(CTkFrame):
         self.parent = parent
         self.config_service = ConfigService()
         self.header_service = HeaderService()
+        self.loading_screen_service = LoadingScreenService(parent)
 
         # main setup
         super().__init__(parent)
@@ -49,9 +53,12 @@ class LoginView(CTkFrame):
         self.btn.configure(state = "normal" if self.auth_var.get() else "disabled")
         
     def navigate_to_home(self):
-        self.config_service.set_auth_token(self.auth_var.get())
-        self.config_service.write_login_config(self.auth_var.get() ,self.ckb_remember_var.get())
-        self.header_service.fetch_username()
-        self.controller.navigate_to_home(self.parent)
-        self.grid_forget()
+        self.loading_screen_service.start_loading_sequence()
+        threading.Timer(1, self.loading_screen_service.stop_loading_sequence).start()
+        # self.config_service.set_auth_token(self.auth_var.get())
+        # self.config_service.write_login_config(self.auth_var.get() ,self.ckb_remember_var.get())
+        # self.header_service.fetch_username()
+        # self.controller.navigate_to_home(self.parent)
+
+        # self.grid_forget()
     

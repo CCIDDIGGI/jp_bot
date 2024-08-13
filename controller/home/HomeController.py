@@ -7,6 +7,7 @@ class HomeController():
         self.view.set_controller(self)
         self.model.set_controller(self)
         self.view.initialize_variables()
+        self.model.initialize_services(self.view.parent)
         
     def assign_default_values(self, default_diff_value: int, default_max_threshold_value: int) -> None:
         self.model.assign_default_values(default_diff_value, default_max_threshold_value)
