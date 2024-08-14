@@ -1,5 +1,3 @@
-import threading
-import time
 import tkinter
 import webbrowser
 from customtkinter import *
@@ -16,7 +14,6 @@ class LoginView(CTkFrame):
         self.config_service = ConfigService()
         self.header_service = HeaderService()
         self.loading_screen_service = LoadingScreenService(parent)
-
         # main setup
         super().__init__(parent)
         self.grid(row=0, column=0, rowspan=3, columnspan=2, sticky="nsew")
@@ -26,7 +23,7 @@ class LoginView(CTkFrame):
         # widgets
         lbl = CTkLabel(self, 1, 1, 2, bg_color = "red", text = "Please enter your CardTrader personal Auth Token")
         self.auth_entry = CTkEntry(self, placeholder_text = "Auth Token...", textvariable=self.auth_var)
-        self.btn = CTkButton(self, 20, 30, command = self.navigate_to_home, text = "Login", state = "disabled")
+        self.btn = CTkButton(self, 20, 30, command = self.init_navigate_to_home, text = "Login", state = "disabled")
         self.ckb_remember = CTkCheckBox(self, text="Remember my auth token", variable=self.ckb_remember_var,
                                          onvalue='on', offvalue='off')
         lbl_info = CTkLabel(self, text="Get your personal auth token from the link below, login first, if needed.")
@@ -52,13 +49,16 @@ class LoginView(CTkFrame):
     def check_auth_btn_state(self, *args) -> None:      
         self.btn.configure(state = "normal" if self.auth_var.get() else "disabled")
         
+    def init_navigate_to_home(self) -> None:
+        self.loading_screen_service.start_loading()
+        # main thread
+        self.navigate_to_home()
+        self.loading_screen_service.stop_loading()
+        
     def navigate_to_home(self):
-        self.loading_screen_service.start_loading_sequence()
-        threading.Timer(1, self.loading_screen_service.stop_loading_sequence).start()
-        # self.config_service.set_auth_token(self.auth_var.get())
-        # self.config_service.write_login_config(self.auth_var.get() ,self.ckb_remember_var.get())
-        # self.header_service.fetch_username()
-        # self.controller.navigate_to_home(self.parent)
-
-        # self.grid_forget()
+        self.config_service.set_auth_token(self.auth_var.get())
+        self.config_service.write_login_config(self.auth_var.get() ,self.ckb_remember_var.get())
+        self.header_service.fetch_username()
+        self.controller.navigate_to_home(self.parent)
+        self.grid_forget()
     

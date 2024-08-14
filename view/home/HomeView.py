@@ -61,7 +61,6 @@ class HomeView(CTkFrame):
     def set_controller(self, controller) -> None:
         self.controller = controller
         
-    # check if this is correct in mvc
     def initialize_variables(self) -> None:
         self.exp_list = self.controller.get_expansions_list()
         self.scr_drpd.configure(values=self.exp_list)  
