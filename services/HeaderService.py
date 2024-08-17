@@ -15,10 +15,10 @@ class HeaderService():
     def __init__(self) -> None:
         self.config_service = ConfigService()
 
-    def set_username(self, value) -> None:
+    def set_username(self, value: str) -> None:
         if not value:
             raise ValueError("Username cannot be empty!")
-        self.username = value
+        self.username = value[:value.index('App')]
 
     def get_username(self) -> str:
         return self.username
