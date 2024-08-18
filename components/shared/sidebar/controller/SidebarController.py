@@ -6,3 +6,6 @@ class SidebarController():
         self.model = model
         self.view = view
         self.view.set_controller(self)
+        
+    def add(self) -> None:
+        self.model.add()

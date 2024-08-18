@@ -118,4 +118,4 @@ class SidebarView(CTkFrame):
         self.config_service.write_address_config(settings)
         
     def add_tab(self) -> None:
-        pass
+        self.controller.add()

@@ -16,9 +16,15 @@ from components.shared.sidebar.controller.SidebarController import SidebarContro
 from components.shared.header.controller.HeaderController import HeaderController
 from components.shared.footer.controller.FooterController import FooterController
 
+from services.MainTabService import MainTabService
+
 class LoginModel():
 
     def navigate_to_home(self, parent) -> None:
+        main_tab_view = MainTabView(parent)
+        main_tab_model = MainTabModel()
+        MainTabController(main_tab_model, main_tab_view)
+        
         sidebar_model = SidebarModel()
         sidebar_view = SidebarView(parent)
         SidebarController(sidebar_model, sidebar_view)
@@ -26,9 +32,6 @@ class LoginModel():
         # home_view = HomeView(parent)
         # home_model = HomeModel()
         # HomeController(home_model, home_view)
-        main_tab_view = MainTabView(parent)
-        main_tab_model = MainTabModel()
-        MainTabController(main_tab_model, main_tab_view)
 
         header_view = HeaderView(parent)
         header_model = HeaderModel()
