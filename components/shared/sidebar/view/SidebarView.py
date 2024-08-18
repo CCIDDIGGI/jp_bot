@@ -92,7 +92,7 @@ class SidebarView(CTkFrame):
         # lbl_ship_country_code.place(x=20, y=440)
         # self.entry_ship_country_code.place(x=130, y=440)
         # self.btn_save.place(x=20, y=500)
-        self.btn_add.grid(row=0, column=0, sticky='nsew')
+        self.btn_add.grid(row=0, column=0)
       
     
     # setting controller (SidebarController)        

@@ -1,7 +1,7 @@
 from customtkinter import *
-from controller.login.LoginController import LoginController
-from model.login.LoginModel import LoginModel
-from view.login.LoginView import LoginView
+from components.auth.controller.LoginController import LoginController
+from components.auth.model.LoginModel import LoginModel
+from components.auth.view.LoginView import LoginView
 
 class MainView(CTk):
     # this should be populated with data from

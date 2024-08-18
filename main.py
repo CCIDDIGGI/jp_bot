@@ -1,4 +1,4 @@
-from view.MainView import MainView
+from MainView import MainView
 
 # entrypoint
 def main():

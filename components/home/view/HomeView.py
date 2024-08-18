@@ -1,6 +1,6 @@
 import tkinter
 from customtkinter import *
-from custom.CTkScrollableDropdown import CTkScrollableDropdown 
+from components.custom.CTkScrollableDropdown import CTkScrollableDropdown 
 
 class HomeView(CTkFrame):
     diff_value = 0

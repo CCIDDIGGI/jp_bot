@@ -4,7 +4,7 @@ from customtkinter import *
 from enums.api.ApiEnum import *
 from services.HeaderService import HeaderService
 from services.ConfigService import ConfigService
-from shared.modals.loading_screen.LoadingScreenService import LoadingScreenService
+from components.shared.modals.loading_screen.LoadingScreenService import LoadingScreenService
 
 class LoginView(CTkFrame):  
 
