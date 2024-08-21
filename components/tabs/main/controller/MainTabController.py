@@ -15,11 +15,12 @@ class MainTabController():
         if not hasattr(self, '_initialized') or not self._initialized:
             self.model = model
             self.view = view
+            self.view.set_controller(self)
+            self.model.set_controller(self)
             MainTabService(self._instance)
             
             # initialized
             self._initialized = True
 
-    def add(self) -> None:
-        print("ADDED")
-        self.view.add("TAB!")
+    def add_new_tab(self) -> None:
+        self.model.add_new_tab()

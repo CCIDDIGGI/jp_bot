@@ -6,6 +6,7 @@ class SidebarView(CTkFrame):
 
     # child of MainView -> parent argument is MainView
     def __init__(self, parent):
+        self.parent = parent
         self.config_service = ConfigService()
 
         # main setup
@@ -60,7 +61,7 @@ class SidebarView(CTkFrame):
         # self.entry_ship_country_code = CTkEntry(self, width=150, textvariable=self.entry_ship_country_code_var) 
 
         # self.btn_save = CTkButton(self, text="Save settings", command=self.save_settings)
-        self.btn_add = CTkButton(self, text="Add Tab", command=self.add_tab)
+        self.btn_add = CTkButton(self, text="Add Tab", command=self.open_new_tab_modal)
 
         # widgets rendering
         # lbl_billing_info.place(x=20, y=20)
@@ -117,5 +118,5 @@ class SidebarView(CTkFrame):
         }
         self.config_service.write_address_config(settings)
         
-    def add_tab(self) -> None:
-        self.controller.add()
+    def open_new_tab_modal(self) -> None:
+        self.controller.open_new_tab_modal(self.parent)

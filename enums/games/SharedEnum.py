@@ -7,3 +7,4 @@ class Conditions(Enum):
     moderately_played = 3
     played = 4
     poor = 5 
+    

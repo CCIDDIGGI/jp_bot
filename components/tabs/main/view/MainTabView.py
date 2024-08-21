@@ -22,3 +22,6 @@ class MainTabView(CTkTabview):
             
             # initialized
             self._initialized = True
+            
+    def set_controller(self, controller) -> None:
+        self.controller = controller

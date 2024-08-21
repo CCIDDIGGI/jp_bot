@@ -7,5 +7,5 @@ class SidebarController():
         self.view = view
         self.view.set_controller(self)
         
-    def add(self) -> None:
-        self.model.add()
+    def open_new_tab_modal(self, parent) -> None:
+        self.model.open_new_tab_modal(parent)
