@@ -16,9 +16,9 @@ class MainTabView(CTkTabview):
         # main setup
         if not hasattr(self, '_initialized') or not self._initialized:
             super().__init__(parent)
+            self.configure(fg_color = "green")
             self.parent = parent
-            
-            self.grid(row=1, column=1, sticky='nsew')
+            self.grid(row=1, column=1, columnspan=2, sticky='nsew')
             
             # initialized
             self._initialized = True

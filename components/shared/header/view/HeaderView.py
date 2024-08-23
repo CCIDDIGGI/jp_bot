@@ -8,7 +8,7 @@ class HeaderView(CTkFrame):
         
         # main setup
         super().__init__(parent)
-        self.grid(row=0, column=0, columnspan=2, sticky="nsew")
+        self.grid(row=0, column=0, columnspan=3, sticky="nsew")
         self.grid_rowconfigure(0, weight=1, uniform='header')
         self.grid_columnconfigure((0,4), weight=1, uniform='header')
         self.grid_columnconfigure((1,2,3), weight=1, uniform='header')

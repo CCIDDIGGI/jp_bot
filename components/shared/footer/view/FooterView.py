@@ -5,7 +5,7 @@ class FooterView(CTkFrame):
     def __init__(self, parent):
         # main setup
         super().__init__(parent)
-        self.grid(row=2, column=0, columnspan=2, sticky="nsew")
+        self.grid(row=2, column=0, columnspan=3, sticky="nsew")
         
     # setting controller (FooterController)
     def set_controller(self, controller) -> None:
