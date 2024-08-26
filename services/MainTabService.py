@@ -16,7 +16,7 @@ class MainTabService():
                 
                 # initialized
                 self._initialized = True
-        
+                
     def add_new_tab(self) -> None:
         self.main_tab_controller.add_new_tab()
         

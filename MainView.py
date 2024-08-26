@@ -43,7 +43,6 @@ class MainView(CTk):
         frames = [child for child in self.winfo_children() if isinstance(child, CTkFrame) 
                   or isinstance(child, CTkTabview)]
         for frame in frames:
-            print(frame)
             if frame.winfo_name() != "!createedittabview":
                 frame.configure(fg_color="#333333")
                 for widget in frame.winfo_children():
