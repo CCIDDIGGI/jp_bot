@@ -1,4 +1,3 @@
-import tkinter
 from typing import Self
 from customtkinter import *
 
