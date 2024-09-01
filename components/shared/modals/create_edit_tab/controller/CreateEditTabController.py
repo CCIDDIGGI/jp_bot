@@ -17,3 +17,6 @@ class CreateEditTabController():
     def set_expansions_by_tcg(self, exp: list) -> None:
         self.view.set_expansions_by_tcg(exp)
         
+    def add_new_tab(self, tab_dto) -> None:
+        self.model.add_new_tab(tab_dto)
+        

@@ -19,9 +19,9 @@ class CreateEditTabService():
         self.create_edit_tab_controller = None
 
     
-    def create_modal_components(self, parent) -> None:
+    def create_modal_components(self, parent, is_new_tab: bool) -> None:
         self.create_edit_tab_model = CreateEditTabModel(self)
-        self.create_edit_tab_view = CreateEditTabView(parent)
+        self.create_edit_tab_view = CreateEditTabView(parent, is_new_tab)
         self.create_edit_tab_controller = CreateEditTabController(self.create_edit_tab_model, self.create_edit_tab_view)
 
     def destroy_modal_components(self) -> None:

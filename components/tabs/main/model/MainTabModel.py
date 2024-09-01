@@ -15,7 +15,7 @@ class MainTabModel():
     def set_controller(self, controller) -> None:
         self.controller = controller
     
-    def add_new_tab(self) -> None:
+    def add_new_tab(self, tab_dto) -> None:
         pass
         
     

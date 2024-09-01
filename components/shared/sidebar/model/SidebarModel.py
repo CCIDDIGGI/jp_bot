@@ -7,4 +7,4 @@ class SidebarModel():
         self.create_edit_tab_service = CreateEditTabService()
             
     def open_new_tab_modal(self, parent) -> None:
-        self.create_edit_tab_service.create_modal_components(parent)
+        self.create_edit_tab_service.create_modal_components(parent, True)

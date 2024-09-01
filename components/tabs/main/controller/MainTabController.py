@@ -22,5 +22,5 @@ class MainTabController():
             # initialized
             self._initialized = True
 
-    def add_new_tab(self) -> None:
-        self.model.add_new_tab()
+    def add_new_tab(self, tab_dto) -> None:
+        self.view.add_new_tab(tab_dto)

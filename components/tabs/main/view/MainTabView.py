@@ -24,3 +24,7 @@ class MainTabView(CTkTabview):
             
     def set_controller(self, controller) -> None:
         self.controller = controller
+    
+    def add_new_tab(self, tab_dto) -> None:
+        self.add(tab_dto["name"])
+        print("added")
