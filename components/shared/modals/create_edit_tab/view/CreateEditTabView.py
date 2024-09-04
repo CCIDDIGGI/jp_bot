@@ -1,5 +1,6 @@
 import tkinter
 from customtkinter import *
+from components.custom.CTkConditionComparison.CTkConditionComparison import CtkConditionComparison
 from components.custom.CTkScrollableDropdown import CTkScrollableDropdown 
 
 class CreateEditTabView(CTkScrollableFrame):
@@ -19,6 +20,8 @@ class CreateEditTabView(CTkScrollableFrame):
             self.configure_edit_tab()
         
         # widgets callback     
+        self.entry_diff_var.trace_add("write", self.try_parse_diff_var)
+        self.entry_maximum_threshold_var.trace_add("write", self.try_parse_maximum_threshold_var)
 
         # widgets rendering  
         self.lbl_name.grid(row=0, column=0, columnspan=1, sticky='w')     
@@ -31,17 +34,19 @@ class CreateEditTabView(CTkScrollableFrame):
         self.radio_diff_perc.grid(row=5, column=0, sticky='nsew')
         self.radio_diff_flat.grid(row=5, column=1, sticky='nsew')
         self.entry_diff.grid(row=5, column=2, sticky='ew')  
+        self.lbl_comparison.grid(row=7, column=0, columnspan=1, sticky='w')
+        self.btn_add_comparison_rule.grid(row=8, column=0, columnspan=1, sticky='w')
 
-        self.btn_cancel.grid(row=9, column=0, columnspan=2, sticky='e')
-        self.btn_add.grid(row=9, column=2, sticky='w')
+        self.btn_cancel.grid(row=13, column=0, columnspan=2, sticky='e')
+        self.btn_add.grid(row=13, column=2, sticky='w')
 
     def configure_new_tab(self) -> None:
-        self.configure(fg_color = "red", label_text="Add Tab")
+        self.configure(fg_color="red", label_text="Add Tab")
         self.grid(row=1, column=1, sticky='nsew')
         self.grid_columnconfigure((0,1), weight=1, uniform='column')
         self.grid_columnconfigure(2, weight=2, uniform='column')
-        self.grid_rowconfigure((0,1,2,3,4,5,6,7,8), weight=3, uniform='row')
-        self.grid_rowconfigure(9, weight=1, uniform='row')
+        self.grid_rowconfigure((0,1,2,3,4,5,6,7,8,9,10,11,12), weight=3, uniform='row')
+        self.grid_rowconfigure(13, weight=1, uniform='row')
 
         self.radio_diff_var = tkinter.IntVar(value=1)
         self.entry_diff_var = tkinter.StringVar(value='10')
@@ -67,11 +72,20 @@ class CreateEditTabView(CTkScrollableFrame):
         self.btn_add = CTkButton(self, text="Add", command=self.add_new_tab)
 
         self.lbl_diff = CTkLabel(self, text="Minimum price difference") 
-        self.radio_diff_perc = CTkRadioButton(self, text="Percentage", variable=self.radio_diff_var, value=1 )
-        self.radio_diff_flat = CTkRadioButton(self, text="Flat value", variable=self.radio_diff_var, value=2 )
-        self.entry_diff = CTkEntry(self)
+        self.radio_diff_perc = CTkRadioButton(self, text="Percentage", variable=self.radio_diff_var, value=1)
+        self.radio_diff_flat = CTkRadioButton(self, text="Flat value", variable=self.radio_diff_var, value=2)
+        self.entry_diff = CTkEntry(self, textvariable=self.entry_diff_var)
+        self.lbl_diff_err = CTkLabel(self, text="Please insert only numerical values!")
+
+        self.lbl_comparison = CTkLabel(self, text="Condition comparison") 
+        self.btn_add_comparison_rule = CTkButton(self, text="Add comparison rule")
+        self.comparison = CtkConditionComparison(self, row=9, column=0, columnspan=3, values=["A", "B"])
+
+        self.lbl_maximum_threshold = CTkLabel(self, text="Maximum threshold amount (EUR) that the software can add to the cart")
+        self.entry_maximum_threshold = CTkEntry(self, textvariable=self.entry_maximum_threshold_var)       
+        self.lbl_maximum_threshold_err = CTkLabel(self, text="Please insert only numerical values!")
         
-    def configure_edit_tabI(self) -> None:
+    def configure_edit_tab(self) -> None:
         self.configure(fg_color = "red", label_text="Edit Tab")
         self.grid(row=1, column=1, sticky='nsew')
         self.grid_columnconfigure((0,1), weight=1, uniform='column')
@@ -118,6 +132,20 @@ class CreateEditTabView(CTkScrollableFrame):
 
     def set_expansions_by_tcg(self, exp: list) -> None:
         self.drpd_exp.configure(values=exp)
+
+    def try_parse_diff_var(self, *args) -> None:
+        try:
+            self.diff_value = int(self.entry_diff_var.get()) if self.entry_diff_var.get() else 0
+            self.lbl_diff_err.grid_remove()
+        except ValueError:
+            self.lbl_diff_err.grid(row=6, column=2, sticky='w')
+            
+    def try_parse_maximum_threshold_var(self, *args) -> None:
+        try:
+            self.maximum_threshold_value = int(self.entry_maximum_threshold_var.get()) if self.entry_maximum_threshold_var.get() else 0
+            self.lbl_maximum_threshold_err.grid_remove()
+        except ValueError:
+            self.lbl_maximum_threshold_err.grid(row=6, column=2, sticky='w')
         
     def cancel_procedure(self) -> None:
         # self.parent.enable_frames()
