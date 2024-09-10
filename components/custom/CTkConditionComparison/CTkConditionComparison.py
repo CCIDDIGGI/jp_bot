@@ -14,7 +14,7 @@ class CtkConditionComparison(CTkFrame):
         # transfer basic functionality (bg_color, size, appearance_mode, scaling) to CTkBaseClass
         super().__init__(master=master)
 
-        self.grid(row=row, column=column, columnspan=columnspan)
+        self.grid(row=row, column=column, columnspan=columnspan, sticky='nsew')
         self.columnconfigure((0,1,2,3,4,5), weight=3)
         self.columnconfigure(6, weight=1)
         self.rowconfigure((0,1), weight=1)
@@ -26,7 +26,8 @@ class CtkConditionComparison(CTkFrame):
         self.lbl_with = CTkLabel(self, text="with")
 
         self.cmb_left_condition = CTkComboBox(self, values=values, 
-                                              variable=self.cmb_left_condition_var)
+                                              variable=self.cmb_left_condition_var,
+                                              command=self.check_btn_comparison_status)
         
         self.cbx_nm = CTkCheckBox(self, text="NM")
         self.cbx_sp = CTkCheckBox(self, text="SP")
@@ -34,7 +35,7 @@ class CtkConditionComparison(CTkFrame):
         self.cbx_pl = CTkCheckBox(self, text="PL")
         self.cbx_po = CTkCheckBox(self, text="PO")
 
-        self.btn_delete = CTkButton(self, text="Delete")
+        self.btn_delete = CTkButton(self, text="Delete", command=self.delete)
 
         # widgets rendering
         self.lbl_compare.grid(row=0, column=0)
@@ -47,6 +48,12 @@ class CtkConditionComparison(CTkFrame):
         self.cbx_po.grid(row=1, column=5)
         self.btn_delete.grid(row=1, column=6)
 
+    def check_btn_comparison_status(self, *kwargs) -> None:
+        self.master.check_btn_comparison_status()
+
+    def delete(self) -> None:
+        self.master.delete_comparison_rule(self)
+        self.destroy()
 
 
 
