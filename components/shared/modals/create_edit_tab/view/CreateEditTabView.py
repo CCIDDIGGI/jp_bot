@@ -6,16 +6,14 @@ from components.custom.CTkScrollableDropdown import CTkScrollableDropdown
 
 class CreateEditTabView(CTkScrollableFrame):
     
-    def __init__(self, parent, is_new_tab: bool):
+    def __init__(self, parent, tab_dto = {}):
         self.parent = parent
+        self.tab_dto = tab_dto
         
         # main setup
         super().__init__(parent)
         
         self.values = ["Pokémon", "Magic: the Gathering"]
-        self.comparison: List[CtkConditionComparison] = []
-        self.comparison_values: List[str] = ["NM", "SP", "MP", "PL", "PO"]
-        self.selected_comparison_values: List[str] = ["NM", "SP", "MP", "PL", "PO"]
         # self.parent.disable_frames()     
         
         if is_new_tab:
@@ -38,8 +36,7 @@ class CreateEditTabView(CTkScrollableFrame):
         self.radio_diff_perc.grid(row=5, column=0, sticky='nsew')
         self.radio_diff_flat.grid(row=5, column=1, sticky='nsew')
         self.entry_diff.grid(row=5, column=2, sticky='ew')  
-        self.lbl_comparison.grid(row=7, column=0, columnspan=1, sticky='w')
-        self.btn_add_comparison_rule.grid(row=8, column=0, columnspan=1, sticky='w')
+        self.custom_con_com = CtkConditionComparison(self, row=6, column=0, columnspan=2, self.comparison_dto)
 
         self.btn_cancel.grid(row=13, column=0, columnspan=2, sticky='e')
         self.btn_add.grid(row=13, column=2, sticky='w')
@@ -80,9 +77,6 @@ class CreateEditTabView(CTkScrollableFrame):
         self.radio_diff_flat = CTkRadioButton(self, text="Flat value", variable=self.radio_diff_var, value=2)
         self.entry_diff = CTkEntry(self, textvariable=self.entry_diff_var)
         self.lbl_diff_err = CTkLabel(self, text="Please insert only numerical values!")
-
-        self.lbl_comparison = CTkLabel(self, text="Condition comparison") 
-        self.btn_add_comparison_rule = CTkButton(self, text="Add comparison rule", command=self.add_comparison_rule)
 
         self.lbl_maximum_threshold = CTkLabel(self, text="Maximum threshold amount (EUR) that the software can add to the cart")
         self.entry_maximum_threshold = CTkEntry(self, textvariable=self.entry_maximum_threshold_var)       
@@ -150,27 +144,27 @@ class CreateEditTabView(CTkScrollableFrame):
         except ValueError:
             self.lbl_maximum_threshold_err.grid(row=6, column=2, sticky='w')
 
-    def add_comparison_rule(self) -> None:
-        if len(self.comparison) >= 1:
-            for filter in self.comparison:
-                if filter.cmb_left_condition_var.get() in self.selected_comparison_values:
-                    self.selected_comparison_values.remove(filter.cmb_left_condition_var.get())
+    # def add_comparison_rule(self) -> None:
+    #     if len(self.comparison) >= 1:
+    #         for filter in self.comparison:
+    #             if filter.cmb_left_condition_var.get() in self.selected_comparison_values:
+    #                 self.selected_comparison_values.remove(filter.cmb_left_condition_var.get())
 
-        self.comparison.append(CtkConditionComparison(self, row=(9+len(self.comparison)), 
-                                                    column=0, columnspan=3, 
-                                                    values=self.selected_comparison_values))
-        self.check_btn_comparison_status()
+    #     self.comparison.append(CtkConditionComparison(self, row=(9+len(self.comparison)), 
+    #                                                 column=0, columnspan=3, 
+    #                                                 values=self.selected_comparison_values))
+    #     self.check_btn_comparison_status()
             
-    def delete_comparison_rule(self, comparison_rule: CtkConditionComparison) -> None:
-        self.comparison.remove(comparison_rule)
-        self.check_btn_comparison_status()
+    # def delete_comparison_rule(self, comparison_rule: CtkConditionComparison) -> None:
+    #     self.comparison.remove(comparison_rule)
+    #     self.check_btn_comparison_status()
 
             
-    def check_btn_comparison_status(self) -> None:
-        self.btn_add_comparison_rule.configure(state="normal" if all(filter.cmb_left_condition_var.get() != "" for 
-                                                                     filter in self.comparison) and len(self.comparison) < 5 or
-                                                                     len(self.comparison) == 0
-                                                                     else "disabled")
+    # def check_btn_comparison_status(self) -> None:
+    #     self.btn_add_comparison_rule.configure(state="normal" if all(filter.cmb_left_condition_var.get() != "" for 
+    #                                                                  filter in self.comparison) and len(self.comparison) < 5 or
+    #                                                                  len(self.comparison) == 0
+    #                                                                  else "disabled")
 
         
     def cancel_procedure(self) -> None:

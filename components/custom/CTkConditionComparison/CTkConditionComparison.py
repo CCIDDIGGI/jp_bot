@@ -9,7 +9,11 @@ class CtkConditionComparison(CTkFrame):
                  row: int,
                  column: int,
                  columnspan: int,
-                 values: List[str]):
+                 dto: List[str] = []):
+        
+        self.comparison: List[CtkConditionComparison] = []
+        self.comparison_values: List[str] = ["NM", "SP", "MP", "PL", "PO"]
+        self.selected_comparison_values: List[str] = ["NM", "SP", "MP", "PL", "PO"]
         
         # transfer basic functionality (bg_color, size, appearance_mode, scaling) to CTkBaseClass
         super().__init__(master=master)
@@ -17,11 +21,13 @@ class CtkConditionComparison(CTkFrame):
         self.grid(row=row, column=column, columnspan=columnspan, sticky='nsew')
         self.columnconfigure((0,1,2,3,4,5), weight=3)
         self.columnconfigure(6, weight=1)
-        self.rowconfigure((0,1), weight=1)
+        self.rowconfigure((0,1,2,3), weight=1)
 
         self.cmb_left_condition_var = tkinter.StringVar(value="")
 
-        # widgets
+        # widgets     
+        self.lbl_comparison = CTkLabel(self, text="Condition comparison") 
+        self.btn_add_comparison_rule = CTkButton(self, text="Add comparison rule", command=self.add_comparison_rule)
         self.lbl_compare = CTkLabel(self, text="Compare...")
         self.lbl_with = CTkLabel(self, text="with")
 
