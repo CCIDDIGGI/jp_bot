@@ -1,14 +1,14 @@
 import tkinter
-from typing import List
 from customtkinter import *
 from components.custom.CTkConditionComparison.CTkConditionComparison import CtkConditionComparison
-from components.custom.CTkScrollableDropdown import CTkScrollableDropdown 
+from components.custom.CTkScrollableDropdown import CTkScrollableDropdown
+from components.tabs.dto.tab_dto import TabDTO 
 
 class CreateEditTabView(CTkScrollableFrame):
     
-    def __init__(self, parent, tab_dto = {}):
+    def __init__(self, parent, tab_data: TabDTO = None):
         self.parent = parent
-        self.tab_dto = tab_dto
+        self.tab_dto: TabDTO = tab_data
         
         # main setup
         super().__init__(parent)
@@ -16,7 +16,7 @@ class CreateEditTabView(CTkScrollableFrame):
         self.values = ["Pokémon", "Magic: the Gathering"]
         # self.parent.disable_frames()     
         
-        if is_new_tab:
+        if self.tab_dto is None:
             self.configure_new_tab()
         else:
             self.configure_edit_tab()
@@ -36,7 +36,6 @@ class CreateEditTabView(CTkScrollableFrame):
         self.radio_diff_perc.grid(row=5, column=0, sticky='nsew')
         self.radio_diff_flat.grid(row=5, column=1, sticky='nsew')
         self.entry_diff.grid(row=5, column=2, sticky='ew')  
-        self.custom_con_com = CtkConditionComparison(self, row=6, column=0, columnspan=2, self.comparison_dto)
 
         self.btn_cancel.grid(row=13, column=0, columnspan=2, sticky='e')
         self.btn_add.grid(row=13, column=2, sticky='w')
@@ -77,7 +76,7 @@ class CreateEditTabView(CTkScrollableFrame):
         self.radio_diff_flat = CTkRadioButton(self, text="Flat value", variable=self.radio_diff_var, value=2)
         self.entry_diff = CTkEntry(self, textvariable=self.entry_diff_var)
         self.lbl_diff_err = CTkLabel(self, text="Please insert only numerical values!")
-
+        self.custom_con_com = CtkConditionComparison(self, row=6, column=0, columnspan=2)
         self.lbl_maximum_threshold = CTkLabel(self, text="Maximum threshold amount (EUR) that the software can add to the cart")
         self.entry_maximum_threshold = CTkEntry(self, textvariable=self.entry_maximum_threshold_var)       
         self.lbl_maximum_threshold_err = CTkLabel(self, text="Please insert only numerical values!")
