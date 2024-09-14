@@ -1,4 +1,3 @@
-from enum import Enum
 import tkinter
 from customtkinter import *
 from typing import Any, List
@@ -12,9 +11,10 @@ class CtkConditionComparison(CTkFrame):
                  columnspan: int,
                  condition_comparison: dict = {}):
         
-        self.condition_comparison = condition_comparison
+        self.condition_comparison_dto = condition_comparison
         self.comparison_values: List[str] = ["NM", "SP", "MP", "PL", "PO"]
         self.selected_comparison_values: List[str] = ["NM", "SP", "MP", "PL", "PO"]
+        self.conditions: dict = { 1: "NM", 2: "SP", 3: "MP", 4: "PL", 5: "PO" }
         self.row_counter_list: list = [0] 
         
         # transfer basic functionality (bg_color, size, appearance_mode, scaling) to CTkBaseClass
@@ -32,8 +32,8 @@ class CtkConditionComparison(CTkFrame):
         self.redraw_component()
 
     def check_btn_comparison_status(self, choice) -> None:
-        self.condition_comparison[choice] = []
-        print(self.condition_comparison[0])
+        self.condition_comparison_dto[choice] = []
+        print(self.condition_comparison_dto[0])
         self.selected_comparison_values.remove(choice)
                 
     def add_comparison_rule(self) -> None:
@@ -53,26 +53,25 @@ class CtkConditionComparison(CTkFrame):
                 CTkButton(self, text="Add comparison rule", command=self.add_comparison_rule).grid(row=0, column=6)
             else:   
                 CTkComboBox(self, values=self.selected_comparison_values, 
-                                                variable=tkinter.StringVar(value=""),
+                                                variable=tkinter.StringVar(value=self.conditions[row] if self.conditions[row] in self.condition_comparison_dto else ""),
                                                 command=self.check_btn_comparison_status).grid(row=row, column=0)
-                CTkCheckBox(self, text="NM", variable=self.condition_comparison[ConditionEnum(row)]["NM"], onvalue="NM", offvalue="").grid(row=row, column=1)
-                CTkCheckBox(self, text="SP", variable=self.condition_comparison[ConditionEnum(row)]["SP"], onvalue="SP", offvalue="").grid(row=row, column=2)
-                CTkCheckBox(self, text="MP", variable=self.condition_comparison[ConditionEnum(row)]["MP"], onvalue="MP", offvalue="").grid(row=row, column=3)
-                CTkCheckBox(self, text="PL", variable=self.condition_comparison[ConditionEnum(row)]["PL"], onvalue="PL", offvalue="").grid(row=row, column=4)
-                CTkCheckBox(self, text="PO", variable=self.condition_comparison[ConditionEnum(row)]["PO"], onvalue="PO", offvalue="").grid(row=row, column=5)
+                CTkCheckBox(self, text="NM", variable= tkinter.StringVar(value="NM" if "NM" in self.condition_comparison_dto.get(self.conditions[row], "") else ""),
+                            onvalue="NM", offvalue="").grid(row=row, column=1)
+                CTkCheckBox(self, text="SP", variable= tkinter.StringVar(value="SP" if "SP" in self.condition_comparison_dto.get(self.conditions[row], "") else ""),
+                            onvalue="SP", offvalue="").grid(row=row, column=2)
+                CTkCheckBox(self, text="MP", variable= tkinter.StringVar(value="MP" if "MP" in self.condition_comparison_dto.get(self.conditions[row], "") else ""),
+                            onvalue="MP", offvalue="").grid(row=row, column=3)
+                CTkCheckBox(self, text="PL", variable= tkinter.StringVar(value="PL" if "PL" in self.condition_comparison_dto.get(self.conditions[row], "") else ""),
+                            onvalue="PL", offvalue="").grid(row=row, column=4)
+                CTkCheckBox(self, text="PO", variable= tkinter.StringVar(value="PO" if "PO" in self.condition_comparison_dto.get(self.conditions[row], "") else ""),
+                            onvalue="PO", offvalue="").grid(row=row, column=5)
                 CTkButton(self, text="Delete", command=lambda: self.delete(row)).grid(row=row, column=6)
 
     def delete(self, row: int) -> None:
         self.row_counter_list.remove(row)
+        del self.condition_comparison_dto[self.conditions[row]]
         for widget in self.winfo_children():
             if widget.grid_info().get("row") == row:
                 widget.destroy()
         self.redraw_component()
-
-class ConditionEnum(Enum):
-    NM = 1
-    SP = 2
-    MP = 3
-    PL = 4
-    PO = 5
  

@@ -76,7 +76,7 @@ class CreateEditTabView(CTkScrollableFrame):
         self.radio_diff_flat = CTkRadioButton(self, text="Flat value", variable=self.radio_diff_var, value=2)
         self.entry_diff = CTkEntry(self, textvariable=self.entry_diff_var)
         self.lbl_diff_err = CTkLabel(self, text="Please insert only numerical values!")
-        self.custom_con_com = CtkConditionComparison(self, row=6, column=0, columnspan=2)
+        self.custom_con_com = CtkConditionComparison(self, row=6, column=0, columnspan=3)
         self.lbl_maximum_threshold = CTkLabel(self, text="Maximum threshold amount (EUR) that the software can add to the cart")
         self.entry_maximum_threshold = CTkEntry(self, textvariable=self.entry_maximum_threshold_var)       
         self.lbl_maximum_threshold_err = CTkLabel(self, text="Please insert only numerical values!")
