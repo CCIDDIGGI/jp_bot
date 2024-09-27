@@ -142,29 +142,6 @@ class CreateEditTabView(CTkScrollableFrame):
             self.lbl_maximum_threshold_err.grid_remove()
         except ValueError:
             self.lbl_maximum_threshold_err.grid(row=6, column=2, sticky='w')
-
-    # def add_comparison_rule(self) -> None:
-    #     if len(self.comparison) >= 1:
-    #         for filter in self.comparison:
-    #             if filter.cmb_left_condition_var.get() in self.selected_comparison_values:
-    #                 self.selected_comparison_values.remove(filter.cmb_left_condition_var.get())
-
-    #     self.comparison.append(CtkConditionComparison(self, row=(9+len(self.comparison)), 
-    #                                                 column=0, columnspan=3, 
-    #                                                 values=self.selected_comparison_values))
-    #     self.check_btn_comparison_status()
-            
-    # def delete_comparison_rule(self, comparison_rule: CtkConditionComparison) -> None:
-    #     self.comparison.remove(comparison_rule)
-    #     self.check_btn_comparison_status()
-
-            
-    # def check_btn_comparison_status(self) -> None:
-    #     self.btn_add_comparison_rule.configure(state="normal" if all(filter.cmb_left_condition_var.get() != "" for 
-    #                                                                  filter in self.comparison) and len(self.comparison) < 5 or
-    #                                                                  len(self.comparison) == 0
-    #                                                                  else "disabled")
-
         
     def cancel_procedure(self) -> None:
         # self.parent.enable_frames()

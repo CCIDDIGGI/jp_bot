@@ -29,9 +29,19 @@ class CtkConditionComparison(CTkFrame):
         self.redraw_component()
                 
     def add_comparison_rule(self) -> None:
-        self.row_counter_list.append(len(self.row_counter_list))
-        self.redraw_component(row=len(self.row_counter_list) - 1)
-        
+        if len(self.row_counter_list) <= len(self.comparison_values):
+            
+            next_row = self.find_next_row()
+                
+            self.row_counter_list.append(next_row)  
+            self.redraw_component(row=next_row)
+            
+    def find_next_row(self) -> int:
+        for row in range(0, len(self.row_counter_list)):
+            if self.row_counter_list[row] != row:
+                return row
+        return len(self.row_counter_list) + 1
+                
     def destroy_child_widgets(self) -> None:
         for widget in self.winfo_children():
             widget.destroy()
@@ -66,22 +76,28 @@ class CtkConditionComparison(CTkFrame):
 
     def delete(self, row: int) -> None:
         self.row_counter_list.remove(row)
+        print(f"la riga {row} e' stata rimossa, le righe presenti ora sono: {self.row_counter_list}")
         for widget in self.winfo_children():
             if widget.grid_info().get("row") == row:
                 widget.destroy()
         self.redraw_component()
         
-    def set_dto(self)-> None:
-        combobox_list = [widget for widget in self.winfo_children() if isinstance(widget, CTkComboBox)]
-        checkbox_list = [widget for widget in self.winfo_children() if isinstance(widget, CTkCheckBox)]
-        
-        if len(combobox_list) == len(checkbox_list):
-            for i, widget in combobox_list:
-                if widget.grid_info().get("row") == i:
-                    self.condition_comparison_dto[widget.get()] = None
-            print(self.condition_comparison_dto)
-        else:
-            pass
+    def set_dto(self) -> None:
+        combobox_dict = {}
+        checkbox_dict = {}
+        for widget in self.winfo_children():
+            if isinstance(widget, CTkComboBox):
+                combobox_dict[widget.grid_info().get("row")] = widget.get()
+            if isinstance(widget, CTkCheckBox):
+                if widget.grid_info().get("row") not in checkbox_dict:
+                    checkbox_dict[widget.grid_info().get("row")] = []
+                if widget.get() != '':
+                    checkbox_dict[widget.grid_info().get("row")].append(widget.get())
                 
-
+        for row in range(1, len(self.row_counter_list)):
+            if row in combobox_dict and row in checkbox_dict:
+                self.condition_comparison_dto[combobox_dict[row]] = checkbox_dict[row]
+                
+    def get_dto(self) -> dict:
+        return self.condition_comparison_dto
             
