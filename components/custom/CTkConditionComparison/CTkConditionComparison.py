@@ -13,10 +13,7 @@ class CtkConditionComparison(CTkFrame):
                  condition_comparison: dict = {}):
         
         self.condition_comparison_dto = condition_comparison
-        self.comparison_values: List[str] = ["NM", "SP", "MP", "PL", "PO"]
-        self.selected_comparison_values: List[str] = ["NM", "SP", "MP", "PL", "PO"]
         self.conditions: dict = { 1: "NM", 2: "SP", 3: "MP", 4: "PL", 5: "PO" }
-        self.row_counter_list: list = [0] 
         
         # transfer basic functionality (bg_color, size, appearance_mode, scaling) to CTkBaseClass
         super().__init__(master=master)
@@ -26,77 +23,34 @@ class CtkConditionComparison(CTkFrame):
         self.columnconfigure(6, weight=1)
 
         # widgets rendering
-        self.redraw_component()
-                
-    def add_comparison_rule(self) -> None:
-        if len(self.row_counter_list) <= len(self.comparison_values):
-            
-            next_row = self.find_next_row()
-                
-            self.row_counter_list.append(next_row)  
-            self.redraw_component(row=next_row)
-            
-    def find_next_row(self) -> int:
-        for row in range(0, len(self.row_counter_list)):
-            if self.row_counter_list[row] != row:
-                return row
-        return len(self.row_counter_list) + 1
-                
-    def destroy_child_widgets(self) -> None:
-        for widget in self.winfo_children():
-            widget.destroy()
-        
-    def redraw_component(self, row=None) -> None:
-        if row is None:
-            self.rowconfigure(tuple(self.row_counter_list), weight=1)
-            self.destroy_child_widgets()
-            for row in self.row_counter_list:
-                self.draw_row(row)
-        else:
-            self.draw_row(row)
+        self.draw()
 
-    def draw_row(self, row: int) -> None:
-        if row == 0:
-            CTkLabel(self, text="Condition comparison").grid(row=0, column=0)
-            CTkButton(self, text="Add rule", command=self.add_comparison_rule).grid(row=0, column=5)
-            CTkButton(self, text="Save", command=self.set_dto).grid(row=0, column=6)
-        else:   
-            # combobox
-            CTkComboBox(self, values=self.selected_comparison_values, 
-                        variable=tkinter.StringVar(value=self.conditions.get(row, ""))).grid(row=row, column=0)
-            # Checkboxes
-            for i, condition in enumerate(self.comparison_values, start=1):
-                CTkCheckBox(
-                    self, text=condition, 
-                    variable=tkinter.StringVar(value=condition if condition in self.condition_comparison_dto.get(self.conditions.get(row, ""), "") else ""),
-                    onvalue=condition, offvalue=""
-                ).grid(row=row, column=i)
-            # button
-            CTkButton(self, text="Delete", command=partial(self.delete, row)).grid(row=row, column=6)
-
-    def delete(self, row: int) -> None:
-        self.row_counter_list.remove(row)
-        print(f"la riga {row} e' stata rimossa, le righe presenti ora sono: {self.row_counter_list}")
-        for widget in self.winfo_children():
-            if widget.grid_info().get("row") == row:
-                widget.destroy()
-        self.redraw_component()
+    def draw(self) -> None:
+        CTkLabel(self, text="Condition comparison").grid(row=0, column=0)
         
-    def set_dto(self) -> None:
-        combobox_dict = {}
-        checkbox_dict = {}
+        for row in range(1, 6):
+            CTkLabel(self, text=self.conditions[row]).grid(row=row, column=0)
+            for col in range(1, 6):
+                CTkCheckBox(self, text=self.conditions[col],
+                            variable=tkinter.StringVar(value=self.conditions[col] if self.conditions[col] in self.condition_comparison_dto.get(self.conditions.get(row, ""), "") else ""),
+                            onvalue=self.conditions[col], 
+                            offvalue="",
+                            command=lambda r=row, c=col: self.set_dto(r, c)).grid(row=row, column=col)
+        
+    def set_dto(self, row: int, col: int) -> None:
+        condition_row = self.conditions[row]
+        condition_col = self.conditions[col]
+
+        if condition_row not in self.condition_comparison_dto:
+            self.condition_comparison_dto[condition_row] = []
+
         for widget in self.winfo_children():
-            if isinstance(widget, CTkComboBox):
-                combobox_dict[widget.grid_info().get("row")] = widget.get()
             if isinstance(widget, CTkCheckBox):
-                if widget.grid_info().get("row") not in checkbox_dict:
-                    checkbox_dict[widget.grid_info().get("row")] = []
-                if widget.get() != '':
-                    checkbox_dict[widget.grid_info().get("row")].append(widget.get())
-                
-        for row in range(1, len(self.row_counter_list)):
-            if row in combobox_dict and row in checkbox_dict:
-                self.condition_comparison_dto[combobox_dict[row]] = checkbox_dict[row]
+                if widget.grid_info().get("row") == row and widget.grid_info().get("column") == col:
+                    if condition_col in self.condition_comparison_dto[condition_row]:
+                        self.condition_comparison_dto[condition_row].remove(condition_col)
+                    else:
+                        self.condition_comparison_dto[condition_row].append(condition_col)
                 
     def get_dto(self) -> dict:
         return self.condition_comparison_dto

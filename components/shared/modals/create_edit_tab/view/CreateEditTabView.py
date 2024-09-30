@@ -36,17 +36,19 @@ class CreateEditTabView(CTkScrollableFrame):
         self.radio_diff_perc.grid(row=5, column=0, sticky='nsew')
         self.radio_diff_flat.grid(row=5, column=1, sticky='nsew')
         self.entry_diff.grid(row=5, column=2, sticky='ew')  
+        self.lbl_maximum_threshold.grid(row=8, column=0, sticky='w')
+        self.entry_maximum_threshold.grid(row=9, column=0, sticky='ew')
 
-        self.btn_cancel.grid(row=13, column=0, columnspan=2, sticky='e')
-        self.btn_add.grid(row=13, column=2, sticky='w')
+        self.btn_cancel.grid(row=11, column=0, columnspan=2, sticky='e')
+        self.btn_add.grid(row=11, column=2, sticky='w')
 
     def configure_new_tab(self) -> None:
         self.configure(fg_color="red", label_text="Add Tab")
         self.grid(row=1, column=1, sticky='nsew')
         self.grid_columnconfigure((0,1), weight=1, uniform='column')
         self.grid_columnconfigure(2, weight=2, uniform='column')
-        self.grid_rowconfigure((0,1,2,3,4,5,6,7,8,9,10,11,12), weight=3, uniform='row')
-        self.grid_rowconfigure(13, weight=1, uniform='row')
+        self.grid_rowconfigure((0,1,2,3,4,5,6,7,8,9,10), weight=3, uniform='row')
+        self.grid_rowconfigure(11, weight=1, uniform='row')
 
         self.radio_diff_var = tkinter.IntVar(value=1)
         self.entry_diff_var = tkinter.StringVar(value='10')
@@ -76,8 +78,8 @@ class CreateEditTabView(CTkScrollableFrame):
         self.radio_diff_flat = CTkRadioButton(self, text="Flat value", variable=self.radio_diff_var, value=2)
         self.entry_diff = CTkEntry(self, textvariable=self.entry_diff_var)
         self.lbl_diff_err = CTkLabel(self, text="Please insert only numerical values!")
-        self.custom_con_com = CtkConditionComparison(self, row=6, column=0, columnspan=3)
-        self.lbl_maximum_threshold = CTkLabel(self, text="Maximum threshold amount (EUR) that the software can add to the cart")
+        self.custom_con_com = CtkConditionComparison(self, row=7, column=0, columnspan=3)
+        self.lbl_maximum_threshold = CTkLabel(self, text="Maximum threshold amount")
         self.entry_maximum_threshold = CTkEntry(self, textvariable=self.entry_maximum_threshold_var)       
         self.lbl_maximum_threshold_err = CTkLabel(self, text="Please insert only numerical values!")
         
@@ -141,7 +143,7 @@ class CreateEditTabView(CTkScrollableFrame):
             self.maximum_threshold_value = int(self.entry_maximum_threshold_var.get()) if self.entry_maximum_threshold_var.get() else 0
             self.lbl_maximum_threshold_err.grid_remove()
         except ValueError:
-            self.lbl_maximum_threshold_err.grid(row=6, column=2, sticky='w')
+            self.lbl_maximum_threshold_err.grid(row=10, column=0, sticky='w')
         
     def cancel_procedure(self) -> None:
         # self.parent.enable_frames()
