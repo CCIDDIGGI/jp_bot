@@ -19,4 +19,5 @@ class CreateEditTabController():
         
     def add_new_tab(self, tab_dto) -> None:
         self.model.add_new_tab(tab_dto)
+    
         

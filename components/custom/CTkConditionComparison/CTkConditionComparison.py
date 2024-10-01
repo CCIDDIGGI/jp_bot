@@ -1,7 +1,8 @@
 from functools import partial
 import tkinter
 from customtkinter import *
-from typing import Any, List
+from typing import Any
+
 
 class CtkConditionComparison(CTkFrame):
 
@@ -54,4 +55,9 @@ class CtkConditionComparison(CTkFrame):
                 
     def get_dto(self) -> dict:
         return self.condition_comparison_dto
+    
+    def destroy(self) -> None:
+        print("killed")
+        super().destroy()
+    
             

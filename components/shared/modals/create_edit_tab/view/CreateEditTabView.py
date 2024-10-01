@@ -2,40 +2,41 @@ import tkinter
 from customtkinter import *
 from components.custom.CTkConditionComparison.CTkConditionComparison import CtkConditionComparison
 from components.custom.CTkScrollableDropdown import CTkScrollableDropdown
-from components.tabs.dto.tab_dto import TabDTO 
+from components.tabs.dto.tab_dto import TabDTO
 
 class CreateEditTabView(CTkScrollableFrame):
-    
+
     def __init__(self, parent, tab_data: TabDTO = None):
         self.parent = parent
         self.tab_dto: TabDTO = tab_data
-        
+        self.diff_value = 0
+        self.maximum_threshold_value = 0
         # main setup
         super().__init__(parent)
-        
+
         self.values = ["Pokémon", "Magic: the Gathering"]
-        # self.parent.disable_frames()     
-        
+        # self.parent.disable_frames()
+
         if self.tab_dto is None:
             self.configure_new_tab()
         else:
             self.configure_edit_tab()
-        
-        # widgets callback     
+
+        # widgets callback
         self.entry_diff_var.trace_add("write", self.try_parse_diff_var)
         self.entry_maximum_threshold_var.trace_add("write", self.try_parse_maximum_threshold_var)
 
-        # widgets rendering  
-        self.lbl_name.grid(row=0, column=0, columnspan=1, sticky='w')     
-        self.entry_name.grid(row=1, column=0, columnspan=2, sticky='ew')  
-        self.lbl_tcg.grid(row=2, column=0, columnspan=2, sticky='w') 
+        # widgets rendering
+        self.lbl_name.grid(row=0, column=0, columnspan=1, sticky='w')
+        self.entry_name.grid(row=1, column=0, columnspan=2, sticky='ew')
+        self.lbl_tcg.grid(row=2, column=0, columnspan=2, sticky='w')
         self.om_tcg.grid(row=3, column=0, columnspan=2, sticky='ew')
         self.lbl_exp.grid(row=2, column=2, sticky='w')
         self.entry_exp.grid(row=3, column=2, sticky='ew')
-        self.lbl_diff.grid(row=4, column=0, columnspan=2, sticky='w')    
+        self.lbl_diff.grid(row=4, column=0, columnspan=2, sticky='w')
         self.radio_diff_perc.grid(row=5, column=0, sticky='nsew')
         self.radio_diff_flat.grid(row=5, column=1, sticky='nsew')
-        self.entry_diff.grid(row=5, column=2, sticky='ew')  
+        self.entry_diff.grid(row=5, column=2, sticky='ew')
         self.lbl_maximum_threshold.grid(row=8, column=0, sticky='w')
         self.entry_maximum_threshold.grid(row=9, column=0, sticky='ew')
 
@@ -43,46 +44,47 @@ class CreateEditTabView(CTkScrollableFrame):
         self.btn_add.grid(row=11, column=2, sticky='w')
 
     def configure_new_tab(self) -> None:
-        self.configure(fg_color="red", label_text="Add Tab")
+        self.configure(fg_color="#333333", label_text="Add Tab")
         self.grid(row=1, column=1, sticky='nsew')
         self.grid_columnconfigure((0,1), weight=1, uniform='column')
         self.grid_columnconfigure(2, weight=2, uniform='column')
-        self.grid_rowconfigure((0,1,2,3,4,5,6,7,8,9,10), weight=3, uniform='row')
-        self.grid_rowconfigure(11, weight=1, uniform='row')
+        self.grid_rowconfigure((0,1,2,3,4,5,6,8,9,10,11), weight=1, uniform='row')
+        self.grid_rowconfigure(7, weight=3, uniform='row')
 
         self.radio_diff_var = tkinter.IntVar(value=1)
         self.entry_diff_var = tkinter.StringVar(value='10')
         self.entry_maximum_threshold_var = tkinter.StringVar(value='50')
-        
+
         # widgets
-        self.lbl_name = CTkLabel(self, text="Enter tab name") 
+        self.lbl_name = CTkLabel(self, text="Enter tab name")
         self.entry_name = CTkEntry(self)
-        self.lbl_tcg = CTkLabel(self, text="Choose a TCG") 
+        self.lbl_tcg = CTkLabel(self, text="Choose a TCG")
         self.om_tcg = CTkOptionMenu(self)
         self.drpd_tcg = CTkScrollableDropdown(self.om_tcg,
                                         values=self.values,
-                                        command=self.get_expansions_by_tcg)  
-        
-        self.lbl_exp = CTkLabel(self, text="Choose an expansion from the list") 
+                                        command=self.get_expansions_by_tcg)
+
+        self.lbl_exp = CTkLabel(self, text="Choose an expansion from the list")
         self.entry_exp = CTkEntry(self)
         self.drpd_exp = CTkScrollableDropdown(self.entry_exp,
-                                              command=lambda e: 
-                                                  self.entry_exp.delete(0,'end') 
+                                              command=lambda e:
+                                                  self.entry_exp.delete(0,'end')
                                                   or self.entry_exp.insert(0, e),
-                                              autocomplete=True) 
+                                              autocomplete=True)
         self.btn_cancel = CTkButton(self, text="Cancel", command=self.cancel_procedure)
         self.btn_add = CTkButton(self, text="Add", command=self.add_new_tab)
 
-        self.lbl_diff = CTkLabel(self, text="Minimum price difference") 
+        self.lbl_diff = CTkLabel(self, text="Minimum price difference")
         self.radio_diff_perc = CTkRadioButton(self, text="Percentage", variable=self.radio_diff_var, value=1)
         self.radio_diff_flat = CTkRadioButton(self, text="Flat value", variable=self.radio_diff_var, value=2)
         self.entry_diff = CTkEntry(self, textvariable=self.entry_diff_var)
         self.lbl_diff_err = CTkLabel(self, text="Please insert only numerical values!")
         self.custom_con_com = CtkConditionComparison(self, row=7, column=0, columnspan=3)
         self.lbl_maximum_threshold = CTkLabel(self, text="Maximum threshold amount")
-        self.entry_maximum_threshold = CTkEntry(self, textvariable=self.entry_maximum_threshold_var)       
+        self.entry_maximum_threshold = CTkEntry(self, textvariable=self.entry_maximum_threshold_var)
         self.lbl_maximum_threshold_err = CTkLabel(self, text="Please insert only numerical values!")
-        
+        self.lbl_form_error = CTkLabel(self, text="Please fill all the fields",  text_color="red")
+
     def configure_edit_tab(self) -> None:
         self.configure(fg_color = "red", label_text="Edit Tab")
         self.grid(row=1, column=1, sticky='nsew')
@@ -93,27 +95,27 @@ class CreateEditTabView(CTkScrollableFrame):
         self.radio_diff_var = tkinter.IntVar(value=1)
         self.entry_diff_var = tkinter.StringVar(value='10')
         self.entry_maximum_threshold_var = tkinter.StringVar(value='50')
-        
+
         # widgets
-        self.lbl_name = CTkLabel(self, text="Enter a tab name") 
+        self.lbl_name = CTkLabel(self, text="Enter a tab name")
         self.entry_name = CTkEntry(self)
-        self.lbl_tcg = CTkLabel(self, text="Choose a TCG") 
+        self.lbl_tcg = CTkLabel(self, text="Choose a TCG")
         self.om_tcg = CTkOptionMenu(self)
         self.drpd_tcg = CTkScrollableDropdown(self.om_tcg,
                                         values=self.values,
-                                        command=self.get_expansions_by_tcg)  
-        
-        self.lbl_exp = CTkLabel(self, text="Choose an expansion from the list") 
+                                        command=self.get_expansions_by_tcg)
+
+        self.lbl_exp = CTkLabel(self, text="Choose an expansion from the list")
         self.entry_exp = CTkEntry(self)
         self.drpd_exp = CTkScrollableDropdown(self.entry_exp,
-                                              command=lambda e: 
-                                                  self.entry_exp.delete(0,'end') 
+                                              command=lambda e:
+                                                  self.entry_exp.delete(0,'end')
                                                   or self.entry_exp.insert(0, e),
-                                              autocomplete=True) 
+                                              autocomplete=True)
         self.btn_cancel = CTkButton(self, text="Cancel", command=self.cancel_procedure)
         self.btn_add = CTkButton(self, text="Add", command=self.add_new_tab)
 
-        self.lbl_diff = CTkLabel(self, text="Minimum price difference between the first and second cheapest listings", wraplength=200) 
+        self.lbl_diff = CTkLabel(self, text="Minimum price difference between the first and second cheapest listings", wraplength=200)
         self.radio_diff_perc = CTkRadioButton(self, text="Percentage", variable=self.radio_diff_var, value=1 )
         self.radio_diff_flat = CTkRadioButton(self, text="Flat value", variable=self.radio_diff_var, value=2 )
         self.entry_diff = CTkEntry(self)
@@ -137,23 +139,40 @@ class CreateEditTabView(CTkScrollableFrame):
             self.lbl_diff_err.grid_remove()
         except ValueError:
             self.lbl_diff_err.grid(row=6, column=2, sticky='w')
-            
+
     def try_parse_maximum_threshold_var(self, *args) -> None:
         try:
             self.maximum_threshold_value = int(self.entry_maximum_threshold_var.get()) if self.entry_maximum_threshold_var.get() else 0
             self.lbl_maximum_threshold_err.grid_remove()
         except ValueError:
-            self.lbl_maximum_threshold_err.grid(row=10, column=0, sticky='w')
-        
+            self.lbl_maximum_threshold_err.grid(row=9, column=2, sticky='w')
+
     def cancel_procedure(self) -> None:
         # self.parent.enable_frames()
-        self.controller.cancel_procedure()
-        self.grid_remove()
-    
+        self.custom_con_com.destroy()
+        # self.controller.cancel_procedure()
+
     def add_new_tab(self) -> None:
-        tab_dto = {
-            "name": self.entry_name.get()
-        }
-        
-        self.controller.add_new_tab(tab_dto)
-        self.cancel_procedure()
+        if all([
+            self.entry_name.get(),
+            self.om_tcg.get(),
+            self.entry_exp.get(),
+            self.diff_value,
+            self.entry_diff_var.get(),
+            self.custom_con_com.get_dto(),
+            self.maximum_threshold_value
+        ]):
+            self.tab_dto = {
+                "name": self.entry_name.get(),
+                "tcg": self.om_tcg.get(),
+                "expansion": self.entry_exp.get(),
+                "price_difference_type": self.diff_value,
+                "price_difference": self.entry_diff_var.get(),
+                "condition_comparison": self.custom_con_com.get_dto(),
+                "maximum_threshold": self.maximum_threshold_value
+            }
+            print(self.tab_dto)
+            self.controller.add_new_tab(self.tab_dto)
+            self.cancel_procedure()
+        else:
+            self.lbl_form_error.grid(row=10, column=0, sticky='w')

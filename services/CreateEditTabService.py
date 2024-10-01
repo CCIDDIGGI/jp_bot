@@ -25,6 +25,10 @@ class CreateEditTabService():
         self.create_edit_tab_controller = CreateEditTabController(self.create_edit_tab_model, self.create_edit_tab_view)
 
     def destroy_modal_components(self) -> None:
-        self.create_edit_tab_model = None
-        self.create_edit_tab_view = None
-        self.create_edit_tab_controller = None      
+        if self.create_edit_tab_view:
+            self.create_edit_tab_view.grid_forget()  # Nascondi il frame dal layout
+            self.create_edit_tab_view.destroy()      # Distruggi tutti i widget associati
+            self.create_edit_tab_view = None         # Rimuovi il riferimento alla view
+
+        self.create_edit_tab_model = None  # Rimuovi il riferimento al modello
+        self.create_edit_tab_controller = None  # Rimuovi il riferimento al controller
