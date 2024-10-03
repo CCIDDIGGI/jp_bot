@@ -1,6 +1,8 @@
 
 from typing import Self
 
+from components.tabs.dto.tab_dto import TabDTO
+
 class MainTabService():
     _instance = None
     
@@ -17,6 +19,6 @@ class MainTabService():
                 # initialized
                 self._initialized = True
                 
-    def add_new_tab(self, tab_dto) -> None:
+    def add_new_tab(self, tab_dto: TabDTO) -> None:
         self.main_tab_controller.add_new_tab(tab_dto)
         

@@ -1,6 +1,8 @@
 from typing import Self
 from customtkinter import *
 
+from components.tabs.dto.tab_dto import TabDTO
+
 class MainTabView(CTkTabview):
     _instance = None
     
@@ -25,6 +27,6 @@ class MainTabView(CTkTabview):
     def set_controller(self, controller) -> None:
         self.controller = controller
     
-    def add_new_tab(self, tab_dto) -> None:
-        self.add(tab_dto["name"])
+    def add_new_tab(self, tab_dto: TabDTO) -> None:
+        self.add(tab_dto.name)
         print("added")

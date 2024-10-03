@@ -1,6 +1,7 @@
 
 from typing import Self
 
+from components.tabs.dto.tab_dto import TabDTO
 from services.MainTabService import MainTabService
 
 class MainTabController():
@@ -22,5 +23,5 @@ class MainTabController():
             # initialized
             self._initialized = True
 
-    def add_new_tab(self, tab_dto) -> None:
+    def add_new_tab(self, tab_dto: TabDTO) -> None:
         self.view.add_new_tab(tab_dto)

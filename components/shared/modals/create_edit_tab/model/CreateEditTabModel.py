@@ -1,4 +1,5 @@
 import requests
+from components.tabs.dto.tab_dto import TabDTO
 from enums.api.ApiEnum import GamesApi
 from enums.games.TcgEnum import *
 from services.ConfigService import ConfigService
@@ -15,7 +16,7 @@ class CreateEditTabModel():
     def set_controller(self, controller) -> None:
         self.controller = controller
         
-    def add_new_tab(self, tab_dto) -> None:
+    def add_new_tab(self, tab_dto: TabDTO) -> None:
         self.main_tab_service.add_new_tab(tab_dto)
         
     def cancel_procedure(self) -> None:
