@@ -2,6 +2,7 @@ from typing import Self
 from customtkinter import *
 
 from components.tabs.dto.tab_dto import TabDTO
+from components.tabs.generic.view.GenericTabView import GenericTabView
 
 class MainTabView(CTkTabview):
     _instance = None
@@ -29,4 +30,6 @@ class MainTabView(CTkTabview):
     
     def add_new_tab(self, tab_dto: TabDTO) -> None:
         self.add(tab_dto.name)
+        tab_widget = self.tab(tab_dto.name)
+        GenericTabView(tab_widget)
         print("added")

@@ -18,10 +18,11 @@ class CreateEditTabView(CTkScrollableFrame):
         self.tab_dto: TabDTO = tab_data
         self.diff_value = 10
         self.maximum_threshold_value = 50
+
         # main setup
         super().__init__(parent)
          
-        self.configure(fg_color="#333333", label_text="Add Tab" if self.tab_dto.name is None else "Edit Tab")
+        self.configure(fg_color="#333333", label_text="Edit Tab" if self.tab_dto.name else "Add Tab")
         self.grid(row=1, column=1, sticky='nsew')
         self.grid_columnconfigure((0,1,2,3,4,5,6,7), weight=1, uniform='column')
         self.grid_rowconfigure((0,1,2,3,4,5,6,8,9,10,11,13,14,15,16,17), weight=1, uniform='row')
@@ -30,14 +31,16 @@ class CreateEditTabView(CTkScrollableFrame):
         
         self.values = ["Pokémon", "Magic: the Gathering"]
         self.conditions: dict = { 1: "NM", 2: "SP", 3: "MP", 4: "PL", 5: "PO" }
-        self.condition_comparison_dict: dict = self.tab_dto.condition_comparison
-        self.radio_diff_var = tkinter.IntVar(value=1)
-        self.entry_diff_var = tkinter.StringVar(value='10')
-        self.entry_maximum_threshold_var = tkinter.StringVar(value='50')
+        self.condition_comparison_dict: dict = dict(self.tab_dto.condition_comparison)
+        self.entry_name_var = tkinter.StringVar(value=self.tab_dto.name if self.tab_dto.name else "")
+        self.entry_exp_var = tkinter.StringVar(value=self.tab_dto.expansion if self.tab_dto.expansion else "") 
+        self.radio_diff_var = tkinter.IntVar(value=self.tab_dto.price_difference_type if self.tab_dto.price_difference_type else 1)
+        self.entry_diff_var = tkinter.StringVar(value=self.tab_dto.price_difference if self.tab_dto.price_difference else '10')
+        self.entry_maximum_threshold_var = tkinter.StringVar(value=self.tab_dto.maximum_threshold if self.tab_dto.maximum_threshold else '50')
 
         # widgets
         self.lbl_name = CTkLabel(self, text="Enter tab name")
-        self.entry_name = CTkEntry(self)
+        self.entry_name = CTkEntry(self, textvariable=self.entry_name_var)
         self.lbl_tcg = CTkLabel(self, text="Choose a TCG")
         self.om_tcg = CTkOptionMenu(self)
         self.drpd_tcg = CTkScrollableDropdown(self.om_tcg,
@@ -47,13 +50,8 @@ class CreateEditTabView(CTkScrollableFrame):
         self.lbl_exp = CTkLabel(self, text="Choose an expansion from the list")
         self.entry_exp = CTkEntry(self)
         self.drpd_exp = CTkScrollableDropdown(self.entry_exp,
-                                              command=lambda e:
-                                                  self.entry_exp.delete(0,'end')
-                                                  or self.entry_exp.insert(0, e),
+                                              command=self.set_drpd,
                                               autocomplete=True)
-        self.btn_cancel = CTkButton(self, text="Cancel", command=self.cancel_procedure)
-        self.btn_add = CTkButton(self, text="Add", command=self.add_new_tab)
-
         self.lbl_diff = CTkLabel(self, text="Minimum price difference")
         self.radio_diff_perc = CTkRadioButton(self, text="Percentage", variable=self.radio_diff_var, value=1)
         self.radio_diff_flat = CTkRadioButton(self, text="Flat value", variable=self.radio_diff_var, value=2)
@@ -64,7 +62,7 @@ class CreateEditTabView(CTkScrollableFrame):
             CTkLabel(self, text=self.conditions[row]).grid(row=7+row, column=0)
             for col in range(1, 6):
                 CTkCheckBox(self, text=self.conditions[col],
-                            variable=tkinter.StringVar(value=""),
+                            variable=tkinter.StringVar(value=self.get_value(row, col)),
                             onvalue=self.conditions[col], 
                             offvalue="",
                             command=lambda r=7+row, c=col: self.set_dto(r, c)).grid(row=7+row, column=col)
@@ -72,10 +70,14 @@ class CreateEditTabView(CTkScrollableFrame):
         self.entry_maximum_threshold = CTkEntry(self, textvariable=self.entry_maximum_threshold_var)
         self.lbl_maximum_threshold_err = CTkLabel(self, text="Please insert only numerical values!", text_color="red")
         self.lbl_form_error = CTkLabel(self, text="Please fill all the fields",  text_color="red")
+        self.btn_cancel = CTkButton(self, text="Cancel", command=self.cancel_procedure)
+        self.btn_add = CTkButton(self, text="Add", command=self.add_new_tab)
         
         # widgets callback
         self.entry_diff_var.trace_add("write", self.try_parse_diff_var)
         self.entry_maximum_threshold_var.trace_add("write", self.try_parse_maximum_threshold_var)
+        if self.tab_dto.expansion:
+            self.set_drpd(self.tab_dto.expansion)
 
         # widgets rendering
         self.lbl_name.grid(row=0, column=0, columnspan=6, sticky='w')
@@ -96,6 +98,10 @@ class CreateEditTabView(CTkScrollableFrame):
     def set_controller(self, controller) -> None:
         self.controller = controller
         
+    def set_drpd(self, exp: str) -> None:
+        self.entry_exp.delete(0, 'end')
+        self.entry_exp.insert(0, exp)
+
     def set_dto(self, row: int, col: int) -> None:
         condition_row = self.conditions[row-7]
         condition_col = self.conditions[col]
@@ -111,11 +117,23 @@ class CreateEditTabView(CTkScrollableFrame):
                         self.condition_comparison_dict[condition_row].append(condition_col)
 
     def init_get_exp(self) -> None:
-        self.get_expansions_by_tcg(self.values[0])
+        self.get_expansions_by_tcg(self.tab_dto.tcg if self.tab_dto.tcg else self.values[0])
 
     def get_expansions_by_tcg(self, choice: str) -> None:
         self.controller.get_expansions_by_tcg(choice)
         self.om_tcg.set(choice)
+
+    def get_value(self, row: int, col: int) -> str:
+        row_condition = self.conditions[row]
+        col_condition = self.conditions[col]
+
+        if row_condition in self.tab_dto.condition_comparison:
+            if col_condition in self.tab_dto.condition_comparison[row_condition]:
+                return col_condition
+            else:
+                return ""
+        else:
+            return ""
 
     def set_expansions_by_tcg(self, exp: list) -> None:
         self.drpd_exp.configure(values=exp)
@@ -147,6 +165,7 @@ class CreateEditTabView(CTkScrollableFrame):
             self.condition_comparison_dict,
             self.maximum_threshold_value
         ]):
+            # sposta tutto su un altro dto
             self.tab_dto = TabDTO(
                 name = self.entry_name.get(),
                 tcg = self.om_tcg.get(),
