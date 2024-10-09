@@ -27,9 +27,15 @@ class MainTabView(CTkTabview):
             
     def set_controller(self, controller) -> None:
         self.controller = controller
+        
+    def set_parent(self) -> None:
+        self.controller.set_parent(self.parent)
     
-    def add_new_tab(self, tab_dto: TabDTO) -> None:
+    def render_new_tab(self, tab_dto: TabDTO) -> None:
         self.add(tab_dto.name)
         tab_widget = self.tab(tab_dto.name)
-        GenericTabView(tab_widget)
-        print("added")
+        self.controller.pass_tab_widget_to_controller(tab_widget, tab_dto)
+        # GenericTabView(tab_widget)
+
+    def delete_tab(self, tab_name: str) -> None:
+        self.delete(tab_name)

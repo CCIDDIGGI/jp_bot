@@ -165,7 +165,6 @@ class CreateEditTabView(CTkScrollableFrame):
             self.condition_comparison_dict,
             self.maximum_threshold_value
         ]):
-            # sposta tutto su un altro dto
             self.tab_dto = TabDTO(
                 name = self.entry_name.get(),
                 tcg = self.om_tcg.get(),

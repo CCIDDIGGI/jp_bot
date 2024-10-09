@@ -1,5 +1,6 @@
 
 from typing import Self
+from components.tabs.dto.tab_dto import TabDTO
 from components.shared.modals.create_edit_tab.model.CreateEditTabModel import CreateEditTabModel
 from components.shared.modals.create_edit_tab.view.CreateEditTabView import CreateEditTabView
 from components.shared.modals.create_edit_tab.controller.CreateEditTabController import CreateEditTabController
@@ -19,9 +20,12 @@ class CreateEditTabService():
         self.create_edit_tab_controller = None
 
     
-    def create_modal_components(self, parent) -> None:
+    def create_modal_components(self, parent, tab_data: TabDTO = None) -> None:
         self.create_edit_tab_model = CreateEditTabModel(self)
-        self.create_edit_tab_view = CreateEditTabView(parent)
+        if tab_data is None:
+            self.create_edit_tab_view = CreateEditTabView(parent)
+        else:
+            self.create_edit_tab_view = CreateEditTabView(parent, tab_data)
         self.create_edit_tab_controller = CreateEditTabController(self.create_edit_tab_model, self.create_edit_tab_view)
 
     def destroy_modal_components(self) -> None:

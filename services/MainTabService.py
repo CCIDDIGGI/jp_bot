@@ -1,6 +1,5 @@
 
 from typing import Self
-
 from components.tabs.dto.tab_dto import TabDTO
 
 class MainTabService():
@@ -15,10 +14,16 @@ class MainTabService():
         if args:
             if not hasattr(self, '_initialized') or not self._initialized:
                 self.main_tab_controller = args[0]
-                
                 # initialized
                 self._initialized = True
                 
     def add_new_tab(self, tab_dto: TabDTO) -> None:
         self.main_tab_controller.add_new_tab(tab_dto)
+        
+    def delete_tab(self, tab_name: str) -> None:
+        self.main_tab_controller.delete_tab(tab_name)
+        
+    def edit_tab(self, tab_dto: TabDTO) -> None:
+        self.main_tab_controller.edit_tab(tab_dto)
+
         
