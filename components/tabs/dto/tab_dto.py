@@ -3,6 +3,7 @@ from dataclasses import dataclass
 @dataclass
 class TabDTO:
 
+    id: str
     name: str
     tcg: str
     expansion: str

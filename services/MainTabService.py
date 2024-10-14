@@ -17,11 +17,11 @@ class MainTabService():
                 # initialized
                 self._initialized = True
                 
-    def add_new_tab(self, tab_dto: TabDTO) -> None:
-        self.main_tab_controller.add_new_tab(tab_dto)
+    def add_edit_tab(self, tab_dto: TabDTO) -> None:
+        self.main_tab_controller.add_edit_tab(tab_dto)
         
-    def delete_tab(self, tab_name: str) -> None:
-        self.main_tab_controller.delete_tab(tab_name)
+    def delete_tab(self, tab_dto: TabDTO) -> None:
+        self.main_tab_controller.delete_tab(tab_dto)
         
     def edit_tab(self, tab_dto: TabDTO) -> None:
         self.main_tab_controller.edit_tab(tab_dto)

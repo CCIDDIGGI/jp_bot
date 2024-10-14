@@ -9,8 +9,8 @@ class GenericTabModel():
     def set_controller(self, controller) -> None:
         self.controller = controller
         
-    def delete_tab(self, tab_name: str) -> None:
-        self.main_tab_service.delete_tab(tab_name)    
+    def delete_tab(self, tab_dto: TabDTO) -> None:
+        self.main_tab_service.delete_tab(tab_dto)    
         
     def edit_tab(self, tab_dto: TabDTO) -> None:
         self.main_tab_service.edit_tab(tab_dto)

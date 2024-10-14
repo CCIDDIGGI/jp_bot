@@ -1,4 +1,5 @@
 from customtkinter import *
+from components.tabs.dto.tab_dto import TabDTO
 
 class GenericTabView(CTkFrame):
     
@@ -28,3 +29,6 @@ class GenericTabView(CTkFrame):
                 
     def edit_tab(self) -> None:
         self.controller.edit_tab()
+        
+    def redraw_tab(self, tab_dto: TabDTO) -> None:
+        self.lbl_prova.configure(text=tab_dto.id)

@@ -2,7 +2,6 @@ from typing import Self
 from customtkinter import *
 
 from components.tabs.dto.tab_dto import TabDTO
-from components.tabs.generic.view.GenericTabView import GenericTabView
 
 class MainTabView(CTkTabview):
     _instance = None

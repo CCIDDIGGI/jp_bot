@@ -1,4 +1,5 @@
 import tkinter
+import uuid
 from customtkinter import *
 from components.custom.CTkScrollableDropdown import CTkScrollableDropdown
 from components.tabs.dto.tab_dto import TabDTO
@@ -6,6 +7,7 @@ from components.tabs.dto.tab_dto import TabDTO
 class CreateEditTabView(CTkScrollableFrame):
 
     def __init__(self, parent, tab_data: TabDTO = TabDTO(
+            id = None,
             name = None,
             tcg = None,
             expansion = None,
@@ -71,7 +73,7 @@ class CreateEditTabView(CTkScrollableFrame):
         self.lbl_maximum_threshold_err = CTkLabel(self, text="Please insert only numerical values!", text_color="red")
         self.lbl_form_error = CTkLabel(self, text="Please fill all the fields",  text_color="red")
         self.btn_cancel = CTkButton(self, text="Cancel", command=self.cancel_procedure)
-        self.btn_add = CTkButton(self, text="Add", command=self.add_new_tab)
+        self.btn_add = CTkButton(self, text="Edit" if self.tab_dto.name else "Add", command=self.add_edit_tab)
         
         # widgets callback
         self.entry_diff_var.trace_add("write", self.try_parse_diff_var)
@@ -155,26 +157,27 @@ class CreateEditTabView(CTkScrollableFrame):
     def cancel_procedure(self) -> None:
         self.controller.cancel_procedure()
 
-    def add_new_tab(self) -> None:
+    def add_edit_tab(self) -> None:
         if all([
             self.entry_name.get(),
             self.om_tcg.get(),
             self.entry_exp.get(),
-            self.diff_value,
+            self.radio_diff_var,
             self.entry_diff_var.get(),
             self.condition_comparison_dict,
             self.maximum_threshold_value
         ]):
             self.tab_dto = TabDTO(
+                id = self.tab_dto.id if self.tab_dto.id else str(uuid.uuid4()),
                 name = self.entry_name.get(),
                 tcg = self.om_tcg.get(),
                 expansion = self.entry_exp.get(),
-                price_difference_type = self.diff_value,
-                price_difference = self.entry_diff_var.get(),
+                price_difference_type = self.radio_diff_var.get(),
+                price_difference = self.diff_value,
                 condition_comparison = self.condition_comparison_dict,
                 maximum_threshold = self.maximum_threshold_value
             )
-            self.controller.add_new_tab(self.tab_dto)
+            self.controller.add_edit_tab(self.tab_dto)
             self.cancel_procedure()
         else:
             self.lbl_form_error.grid(row=16, column=0, columnspan=4, sticky='w')

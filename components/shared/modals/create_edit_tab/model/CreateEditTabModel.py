@@ -16,8 +16,8 @@ class CreateEditTabModel():
     def set_controller(self, controller) -> None:
         self.controller = controller
         
-    def add_new_tab(self, tab_dto: TabDTO) -> None:
-        self.main_tab_service.add_new_tab(tab_dto)
+    def add_edit_tab(self, tab_dto: TabDTO) -> None:
+        self.main_tab_service.add_edit_tab(tab_dto)
         
     def cancel_procedure(self) -> None:
         self.create_edit_tab_service.destroy_modal_components()

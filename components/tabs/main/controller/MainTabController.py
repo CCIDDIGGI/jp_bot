@@ -26,14 +26,20 @@ class MainTabController():
     def set_parent(self, parent) -> None:
         self.model.set_parent(parent)
 
-    def add_new_tab(self, tab_dto: TabDTO) -> None:
-        self.view.render_new_tab(tab_dto)
+    def add_edit_tab(self, tab_dto: TabDTO) -> None:
+        # check if id already exists, if so, it is a tab edit
+        if self.model.check_tab_id(tab_dto):
+            self.model.redraw_tab_after_edit(tab_dto)
+        else:
+            self.view.render_new_tab(tab_dto)
+        
         
     def pass_tab_widget_to_controller(self, tab_widget: CTkFrame, tab_dto: TabDTO) -> None:
         self.model.initialize_generic_tab(tab_widget, tab_dto)
         
-    def delete_tab(self, tab_name: str) -> None:
-        self.view.delete_tab(tab_name)
+    def delete_tab(self, tab_dto: TabDTO) -> None:
+        self.model.delete_tab(tab_dto.id)
+        self.view.delete_tab(tab_dto.name)
         
     def edit_tab(self, tab_dto: TabDTO) -> None:
         self.model.edit_tab(tab_dto)

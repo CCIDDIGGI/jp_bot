@@ -9,6 +9,8 @@ from services.CreateEditTabService import CreateEditTabService
 class MainTabModel():
 
     _instance = None
+    # a list of all the child tabs created
+    generic_tabs = []
     
     def __new__(cls, *args, **kwargs) -> Self:
         if cls._instance is None:
@@ -18,7 +20,6 @@ class MainTabModel():
     def __init__(self) -> None:
         self.parent = None
         self.create_edit_tab_service = CreateEditTabService()
-
         
     def set_parent(self, parent) -> None:
         self.parent = parent
@@ -26,12 +27,34 @@ class MainTabModel():
     def set_controller(self, controller) -> None:
         self.controller = controller
     
-    def add_new_tab(self, tab_dto) -> None:
-        pass
-
+    def check_tab_id(self, tab_dto: TabDTO) -> bool:
+        # base case, generic tab list has at least one tab
+        if len(self.generic_tabs) > 0:
+            for index, tab in enumerate(self.generic_tabs):
+                if tab.id == tab_dto.id:
+                    print("tab presente in lista, è un edit")
+                    self.generic_tabs[index] = tab_dto
+                    return True        
+        print("tab non presente in lista, aggiungo...")
+        self.generic_tabs.append(tab_dto)
+        return False
+        
+            
     def initialize_generic_tab(self, tab_widget: CTkFrame, tab_dto: TabDTO) -> None:
         GenericTabController(GenericTabModel(), GenericTabView(tab_widget), tab_dto)
         
     def edit_tab(self, tab_dto: TabDTO) -> None:
         self.create_edit_tab_service.create_modal_components(self.parent, tab_dto)
-    
+        
+    def redraw_tab_after_edit(self, tab_dto: TabDTO) -> None:
+        for instance in GenericTabController.instances:
+            if instance.tab_dto.id == tab_dto.id:
+                instance.redraw_tab(tab_dto)
+                        
+    def delete_tab(self, tab_dto_id: str) -> None:
+        # generic tab should always have at least one item here
+        for tab in self.generic_tabs:
+            if tab.id == tab_dto_id:
+                print("tab eliminato dalla lista!")
+                self.generic_tabs.remove(tab)
+                return    
