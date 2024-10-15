@@ -17,6 +17,7 @@ class CreateEditTabView(CTkScrollableFrame):
             maximum_threshold = None
     )):
         self.parent = parent
+        self.is_edit = tab_data.name
         self.tab_dto: TabDTO = tab_data
         self.diff_value = 10
         self.maximum_threshold_value = 50
@@ -158,26 +159,37 @@ class CreateEditTabView(CTkScrollableFrame):
         self.controller.cancel_procedure()
 
     def add_edit_tab(self) -> None:
-        if all([
-            self.entry_name.get(),
-            self.om_tcg.get(),
-            self.entry_exp.get(),
-            self.radio_diff_var,
-            self.entry_diff_var.get(),
-            self.condition_comparison_dict,
-            self.maximum_threshold_value
-        ]):
-            self.tab_dto = TabDTO(
-                id = self.tab_dto.id if self.tab_dto.id else str(uuid.uuid4()),
-                name = self.entry_name.get(),
-                tcg = self.om_tcg.get(),
-                expansion = self.entry_exp.get(),
-                price_difference_type = self.radio_diff_var.get(),
-                price_difference = self.diff_value,
-                condition_comparison = self.condition_comparison_dict,
-                maximum_threshold = self.maximum_threshold_value
-            )
-            self.controller.add_edit_tab(self.tab_dto)
-            self.cancel_procedure()
-        else:
+        try:
+            if all([
+                self.entry_name.get(),
+                self.om_tcg.get(),
+                self.entry_exp.get(),
+                self.radio_diff_var,
+                self.entry_diff_var.get(),
+                self.condition_comparison_dict,
+                self.maximum_threshold_value
+            ]):
+                # check for duplicate tab names in edit
+                if self.is_edit:
+                    self.controller.check_duplicate_tab_names(self.entry_name.get(), True)
+                # check for duplicate tab names in add
+                else:
+                    self.controller.check_duplicate_tab_names(self.entry_name.get())    
+                
+                self.tab_dto = TabDTO(
+                    id = self.tab_dto.id if self.tab_dto.id else str(uuid.uuid4()),
+                    name = self.entry_name.get(),
+                    tcg = self.om_tcg.get(),
+                    expansion = self.entry_exp.get(),
+                    price_difference_type = self.radio_diff_var.get(),
+                    price_difference = self.diff_value,
+                    condition_comparison = self.condition_comparison_dict,
+                    maximum_threshold = self.maximum_threshold_value
+                )
+                self.controller.add_edit_tab(self.tab_dto)
+                self.cancel_procedure()
+            else:
+                self.lbl_form_error.grid(row=16, column=0, columnspan=4, sticky='w')
+        except ValueError:
             self.lbl_form_error.grid(row=16, column=0, columnspan=4, sticky='w')
+            self.lbl_form_error.configure(text=f"Tab with name: {self.entry_name.get()} already exists!")

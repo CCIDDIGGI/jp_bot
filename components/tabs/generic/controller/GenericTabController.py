@@ -18,5 +18,5 @@ class GenericTabController():
     def edit_tab(self) -> None:
         self.model.edit_tab(self.tab_dto)
         
-    def redraw_tab(self, tab_dto: TabDTO):
-        self.view.redraw_tab(tab_dto)
+    def redraw_tab(self):
+        self.view.redraw_tab(self.tab_dto)

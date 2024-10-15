@@ -29,11 +29,13 @@ class MainTabController():
     def add_edit_tab(self, tab_dto: TabDTO) -> None:
         # check if id already exists, if so, it is a tab edit
         if self.model.check_tab_id(tab_dto):
-            self.model.redraw_tab_after_edit(tab_dto)
+            self.model.initialize_edited_tab(tab_dto)
         else:
             self.view.render_new_tab(tab_dto)
-        
-        
+            
+    def rename_tab(self, old_name: str, new_name: str) -> None:
+        self.view.rename_tab(old_name, new_name)
+    
     def pass_tab_widget_to_controller(self, tab_widget: CTkFrame, tab_dto: TabDTO) -> None:
         self.model.initialize_generic_tab(tab_widget, tab_dto)
         
@@ -43,4 +45,7 @@ class MainTabController():
         
     def edit_tab(self, tab_dto: TabDTO) -> None:
         self.model.edit_tab(tab_dto)
+        
+    def check_duplicate_tab_names(self, tab_name: str, is_edit: bool) -> None:
+        self.view.check_duplicate_tab_names(tab_name, is_edit)
         

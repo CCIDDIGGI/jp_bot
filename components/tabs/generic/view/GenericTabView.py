@@ -31,4 +31,4 @@ class GenericTabView(CTkFrame):
         self.controller.edit_tab()
         
     def redraw_tab(self, tab_dto: TabDTO) -> None:
-        self.lbl_prova.configure(text=tab_dto.id)
+        self.lbl_prova.configure(text=tab_dto.name)

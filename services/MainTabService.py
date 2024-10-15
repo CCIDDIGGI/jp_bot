@@ -25,5 +25,8 @@ class MainTabService():
         
     def edit_tab(self, tab_dto: TabDTO) -> None:
         self.main_tab_controller.edit_tab(tab_dto)
+        
+    def check_duplicate_tab_names(self, tab_name: str, is_edit: bool) -> None:
+        self.main_tab_controller.check_duplicate_tab_names(tab_name, is_edit)
 
         

@@ -20,4 +20,7 @@ class CreateEditTabController():
     def add_edit_tab(self, tab_dto) -> None:
         self.model.add_edit_tab(tab_dto)
     
+    def check_duplicate_tab_names(self, tab_name: str, is_edit: bool = False) -> None:
+        self.model.check_duplicate_tab_names(tab_name, is_edit)
+    
         

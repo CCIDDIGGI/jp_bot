@@ -38,3 +38,17 @@ class MainTabView(CTkTabview):
 
     def delete_tab(self, tab_name: str) -> None:
         self.delete(tab_name)
+        
+    def rename_tab(self, old_name: str, new_name: str): 
+        self.rename(old_name, "sample")
+        self.rename("sample", new_name)
+        
+    def check_duplicate_tab_names(self, tab_name: str, is_edit: bool) -> None:
+        if tab_name in self._tab_dict:
+            # is an edit
+            if is_edit and tab_name == self.get():
+                print("la tab esiste, ma è quella selezionata, dunque un edit")
+                return
+            
+            print("la tab esiste e non puo essere inserita")
+            raise ValueError

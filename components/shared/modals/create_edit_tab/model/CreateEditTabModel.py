@@ -48,3 +48,5 @@ class CreateEditTabModel():
             # to change with a modal
             print(f"An error occurred while getting all expansions, error is: {e}")
 
+    def check_duplicate_tab_names(self, tab_name: str, is_edit: bool) -> None:
+        self.main_tab_service.check_duplicate_tab_names(tab_name, is_edit)
