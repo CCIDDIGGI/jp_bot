@@ -13,6 +13,9 @@ class CreateEditTabController():
 
     def get_expansions_by_tcg(self, choice: str) -> None:
         self.model.get_expansions_by_tcg(choice)
+        
+    def get_exp_id_by_name(self, exp_name: str) -> int:
+        return self.model.get_exp_id_by_name(exp_name)
 
     def set_expansions_by_tcg(self, exp: list) -> None:
         self.view.set_expansions_by_tcg(exp)

@@ -11,6 +11,7 @@ class GenericTabController():
         self.tab_dto = tab_dto
         self.model.set_controller(self)
         self.view.set_controller(self)
+        self.view.init_user_info(self.tab_dto)
         
     def delete_tab(self) -> None:
         self.model.delete_tab(self.tab_dto)    
@@ -20,3 +21,6 @@ class GenericTabController():
         
     def redraw_tab(self):
         self.view.redraw_tab(self.tab_dto)
+        
+    async def start_process(self) -> None:
+        await self.model.start_process(self.tab_dto)

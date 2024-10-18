@@ -36,6 +36,11 @@ class CreateEditTabModel():
                     if exp["game_id"] == PkmGenerics.id.value:
                         self.specific_exp_list.append(exp["name"])
                 self.controller.set_expansions_by_tcg(self.specific_exp_list)        
+    
+    def get_exp_id_by_name(self, exp_name: str) -> int:
+        exp = next((exp for exp in self.total_exp_list if exp["name"] == exp_name), None)
+        if exp:
+            return exp["id"]
                 
     def get_expansions(self) -> list:
         headers = {
