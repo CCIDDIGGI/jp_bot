@@ -55,16 +55,7 @@ class GenericTabView(CTkFrame):
         pass
     
     def start_process_wrapper(self):
-        try:
-            # Ottieni il loop di eventi corrente, se esiste
-            loop = asyncio.get_running_loop()
-        except RuntimeError:
-            # Se non esiste un loop di eventi, creane uno nuovo
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-
-        # Avvia la coroutine utilizzando il loop di eventi
-        loop.create_task(self.start_process())
+        asyncio.run(self.start_process())
     
     async def start_process(self) -> None:
         await self.controller.start_process()
