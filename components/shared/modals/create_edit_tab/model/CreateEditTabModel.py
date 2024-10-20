@@ -40,6 +40,7 @@ class CreateEditTabModel():
     def get_exp_id_by_name(self, exp_name: str) -> int:
         exp = next((exp for exp in self.total_exp_list if exp["name"] == exp_name), None)
         if exp:
+            print(exp["id"])
             return exp["id"]
                 
     def get_expansions(self) -> list:

@@ -182,11 +182,11 @@ class CreateEditTabView(CTkScrollableFrame):
                     name = self.entry_name.get(),
                     tcg = self.om_tcg.get(),
                     expansion = self.entry_exp.get(),
-                    exp_id = self.controller.get_exp_id_by_name(self.om_tcg.get()),
+                    exp_id = self.controller.get_exp_id_by_name(self.entry_exp.get()),
                     price_difference_type = self.radio_diff_var.get(),
                     price_difference = self.diff_value,
                     condition_comparison = self.condition_comparison_dict,
-                    maximum_threshold = self.maximum_threshold_value
+                    maximum_threshold = self.maximum_threshold_value * 100
                 )
                 self.controller.add_edit_tab(self.tab_dto)
                 self.cancel_procedure()

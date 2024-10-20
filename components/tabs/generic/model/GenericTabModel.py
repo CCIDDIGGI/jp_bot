@@ -1,6 +1,7 @@
 import aiohttp
+import requests
 from components.tabs.dto.tab_dto import TabDTO
-from enums.api.ApiEnum import GamesApi
+from enums.api.ApiEnum import CartApi, GamesApi
 from services.ConfigService import ConfigService
 from services.MainTabService import MainTabService
 
@@ -33,7 +34,7 @@ class GenericTabModel():
                 async with session.get(f'{GamesApi.GET_LISTING_BY_EXPANSION_ID.value}{tab_dto.exp_id}', headers=self.headers) as response:
                     response.raise_for_status()
                     listings = await response.json() 
-                    print(listings)
+                    await self.process_listings_items(listings.items())
             except aiohttp.ClientConnectionError as cce:
                 print(f"A connection error occurred: {cce}")
                 return
@@ -46,3 +47,31 @@ class GenericTabModel():
             except Exception as e:
                 print(f"Something went wrong while fetching all the listing by expansion id: {tab_dto.exp_id}, error is {e}")
                 return
+            
+    async def process_listings_items(self, listings) -> None:
+        # loop throught every item found in listings
+        for key, value in listings:
+            
+            for prop in value:
+                # fare distinzione per lingua e tcg
+                if all([
+                    prop.get("properties_hash", {}).get("pokemon_language") == "it",
+                    prop.get("user", {}).get("can_sell_via_hub") == True
+                ]):
+                    await self.add_item_to_cart(prop["id"])
+                    return
+                
+    async def add_item_to_cart(self, id: int) -> None:    
+        payload = {
+            "product_id": id,
+            "quantity": 1,
+            "via_cardtrader_zero": True,
+        }
+
+        response = requests.post(CartApi.ADD_PRODUCT_TO_CART.value, json=payload, headers=self.headers)
+        
+        if response.status_code == 200:
+            print("Item succesfully added to cart!")
+        else:
+           print(f"An error occurred while addding the item to cart: {response.text}")
+            
