@@ -34,7 +34,7 @@ class CreateEditTabView(CTkScrollableFrame):
         # self.parent.disable_frames()
         
         self.values = ["Pokémon", "Magic: the Gathering"]
-        self.conditions: dict = { 1: "NM", 2: "SP", 3: "MP", 4: "PL", 5: "PO" }
+        self.conditions: dict = { 1: "Near Mint", 2: "Slightly Played", 3: "Moderately Played", 4: "Played", 5: "Poor" }
         self.condition_comparison_dict: dict = dict(self.tab_dto.condition_comparison)
         self.entry_name_var = tkinter.StringVar(value=self.tab_dto.name if self.tab_dto.name else "")
         self.entry_exp_var = tkinter.StringVar(value=self.tab_dto.expansion if self.tab_dto.expansion else "") 
@@ -63,13 +63,13 @@ class CreateEditTabView(CTkScrollableFrame):
         self.lbl_diff_err = CTkLabel(self, text="Please insert only numerical values!", text_color="red")
         CTkLabel(self, text="Condition comparison").grid(row=7, column=0, columnspan=6, sticky='w')
         for row in range(1, 6):
-            CTkLabel(self, text=self.conditions[row]).grid(row=7+row, column=0)
+            CTkLabel(self, text=self.conditions[row]).grid(row=7+row, column=0, columnspan=2, sticky='w')
             for col in range(1, 6):
                 CTkCheckBox(self, text=self.conditions[col],
                             variable=tkinter.StringVar(value=self.get_value(row, col)),
                             onvalue=self.conditions[col], 
                             offvalue="",
-                            command=lambda r=7+row, c=col: self.set_dto(r, c)).grid(row=7+row, column=col)
+                            command=lambda r=7+row, c=col: self.set_dto(r, c)).grid(row=7+row, column=col, sticky='ew')
         self.lbl_maximum_threshold = CTkLabel(self, text="Maximum threshold amount")
         self.entry_maximum_threshold = CTkEntry(self, textvariable=self.entry_maximum_threshold_var)
         self.lbl_maximum_threshold_err = CTkLabel(self, text="Please insert only numerical values!", text_color="red")

@@ -34,7 +34,7 @@ class GenericTabModel():
                 async with session.get(f'{GamesApi.GET_LISTING_BY_EXPANSION_ID.value}{tab_dto.exp_id}', headers=self.headers) as response:
                     response.raise_for_status()
                     listings = await response.json() 
-                    await self.process_listings_items(listings.items())
+                    await self.process_listings_items(listings.items(), tab_dto)
             except aiohttp.ClientConnectionError as cce:
                 print(f"A connection error occurred: {cce}")
                 return
@@ -48,18 +48,41 @@ class GenericTabModel():
                 print(f"Something went wrong while fetching all the listing by expansion id: {tab_dto.exp_id}, error is {e}")
                 return
             
-    async def process_listings_items(self, listings) -> None:
+    async def process_listings_items(self, listings, tab_dto: TabDTO) -> None:
+        property_hash_for_language: str = None
+        match tab_dto.tcg:
+            case "Pokémon":
+                property_hash_for_language = "pokemon_language"
+            case "Magic: the Gathering":
+                property_hash_for_language = "mtg_language"
         # loop throught every item found in listings
         for key, value in listings:
             
-            for prop in value:
-                # fare distinzione per lingua e tcg
+            first_listing = None
+            for current_listing in value:
                 if all([
-                    prop.get("properties_hash", {}).get("pokemon_language") == "it",
-                    prop.get("user", {}).get("can_sell_via_hub") == True
+                    current_listing.get("properties_hash", {}).get(property_hash_for_language) == "it",
+                    current_listing.get("user", {}).get("can_sell_via_hub") == True
                 ]):
-                    await self.add_item_to_cart(prop["id"])
-                    return
+                    # initialize first_listing if None 
+                    if first_listing is None:
+                        # check if current_listing condition is valid
+                        if current_listing.get("properties_hash", {}).get("condition") in tab_dto.condition_comparison: 
+                            first_listing = current_listing
+    
+                    # if first_listing is initialized, start main comparison logic    
+                    else:
+                        # check difference type
+                        if tab_dto.price_difference_type == 1:
+                            if current_listing.get("properties_hash", {}).get("condition") in tab_dto.condition_comparison[first_listing.get("properties_hash", {}).get("condition")]:
+                                if (current_listing["price_cents"] - ((tab_dto.price_difference / 100) * current_listing["price_cents"])) > first_listing["price_cents"]:
+                                    print(f"{first_listing['name_en']}, listed for: {first_listing['price_cents']} by: {first_listing['user']['username']} with id {first_listing["id"]} is at least {tab_dto.price_difference} % cheaper then {current_listing['price_cents']}  by: {current_listing['user']['username']} , adding it to cart...")
+                                    await self.add_item_to_cart(first_listing["id"])
+                                    break
+                        # else:
+                            
+                        
+                        
                 
     async def add_item_to_cart(self, id: int) -> None:    
         payload = {
